@@ -1,0 +1,16 @@
+{
+  "name": "climateline-processor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "climateline-processor",
+  "author": "margostino <https://margostino.com/>",
+  "license": "Apache-2.0 license",
+  "dependencies": {
+    "vercel": "^24.0.0"
+  },
+  "scripts": {
+    "setup": "yarn vercel login && yarn vercel link",
+    "start": "yarn vercel dev",
+    "dev": "yarn start"
+  }
+}

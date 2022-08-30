@@ -1,0 +1,11 @@
+{
+  "github": {
+    "silent": true
+  },
+  "functions": {
+    "api/main.go": {
+      "memory": 1024,
+      "maxDuration": 5
+    }
+  }
+}
