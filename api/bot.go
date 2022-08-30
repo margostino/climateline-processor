@@ -26,7 +26,7 @@ func Reply(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
 
-	reply := "echo"
+	reply := fmt.Sprintf("echo with: %d", len(Items))
 
 	data := Response{
 		Msg:    reply,

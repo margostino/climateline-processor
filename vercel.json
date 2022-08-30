@@ -5,11 +5,11 @@
   "functions": {
     "api/job.go": {
       "memory": 1024,
-      "maxDuration": 5
+      "maxDuration": 10
     },
     "api/bot.go": {
       "memory": 1024,
-      "maxDuration": 5
+      "maxDuration": 10
     }
   }
 }
