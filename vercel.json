@@ -3,7 +3,7 @@
     "silent": true
   },
   "functions": {
-    "api/main.go": {
+    "api/index.go": {
       "memory": 1024,
       "maxDuration": 5
     }
