@@ -3,7 +3,11 @@
     "silent": true
   },
   "functions": {
-    "api/index.go": {
+    "api/job.go": {
+      "memory": 1024,
+      "maxDuration": 5
+    },
+    "api/bot.go": {
       "memory": 1024,
       "maxDuration": 5
     }
