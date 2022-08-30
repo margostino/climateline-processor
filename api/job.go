@@ -13,19 +13,17 @@ import (
 )
 
 var bot = NewBot()
-var Items map[int]*gofeed.Item
 
 func RunJob(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 
-	log.Printf("ITEMS: %d\n", len(Items))
-	Items = make(map[int]*gofeed.Item)
+	CachedItems = make(map[int]*gofeed.Item)
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
 	for id, item := range feed.Items {
 		Notify(item, id)
-		Items[id] = item
+		CachedItems[id] = item
 	}
 
 	resp := make(map[string]string)

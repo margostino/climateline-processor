@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/mmcdole/gofeed"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
+
+var CachedItems map[int]*gofeed.Item
 
 type Response struct {
 	Msg    string `json:"text"`
@@ -26,7 +29,7 @@ func Reply(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
 
-	reply := fmt.Sprintf("echo with: %d", len(Items))
+	reply := fmt.Sprintf("echo with: %d", len(CachedItems))
 
 	data := Response{
 		Msg:    reply,
