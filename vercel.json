@@ -3,11 +3,11 @@
     "silent": true
   },
   "functions": {
-    "api/job.go": {
+    "api/bot.go": {
       "memory": 1024,
       "maxDuration": 10
     },
-    "api/bot.go": {
+    "api/job.go": {
       "memory": 1024,
       "maxDuration": 10
     }
