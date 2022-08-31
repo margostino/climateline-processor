@@ -15,7 +15,7 @@
       "memory": 1024,
       "maxDuration": 10
     },
-    "api/test/hello.go": {
+    "api/*.go": {
       "memory": 1024,
       "maxDuration": 10
     }
