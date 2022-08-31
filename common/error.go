@@ -7,3 +7,11 @@ func Check(err error, message string) {
 		log.Fatalf("Error: %s - %s", err.Error(), message)
 	}
 }
+
+func Fail(err error, message string) bool {
+	if err != nil {
+		log.Printf("Error: %s - %s\n", err.Error(), message)
+		return true
+	}
+	return false
+}

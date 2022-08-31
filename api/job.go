@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/margostino/climateline-processor/cache"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/mmcdole/gofeed"
 	"log"
@@ -15,17 +14,17 @@ import (
 
 var bot = NewBot()
 
-func RunJob(w http.ResponseWriter, r *http.Request) {
+func Job(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 
-	log.Printf("Cached Items (RunJob): %d", len(cache.Items))
-	cache.Items = make(map[int]*gofeed.Item)
+	//log.Printf("Cached Items (RunJob): %d", len(cache.Items))
+	//cache.Items = make(map[int]*gofeed.Item)
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
 	for id, item := range feed.Items {
 		Notify(item, id)
-		cache.Items[id] = item
+		//cache.Items[id] = item
 	}
 
 	resp := make(map[string]string)

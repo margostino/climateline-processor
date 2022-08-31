@@ -10,6 +10,10 @@
     "api/job.go": {
       "memory": 1024,
       "maxDuration": 10
+    },
+    "api/cache.go": {
+      "memory": 1024,
+      "maxDuration": 10
     }
   }
 }
