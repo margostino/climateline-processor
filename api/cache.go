@@ -5,7 +5,6 @@ import (
 	"github.com/margostino/climateline-processor/common"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 type Item struct {
@@ -39,7 +38,7 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 
 	} else if r.Method == "GET" {
 
-		idStr := strings.TrimPrefix(r.URL.Path, "/cache/items/")
+		idStr := r.URL.Query().Get("id")
 		id, parseErr := strconv.Atoi(idStr)
 
 		if common.Fail(parseErr, "when parsing ID from path") {
