@@ -14,10 +14,6 @@
     "api/cache.go": {
       "memory": 1024,
       "maxDuration": 10
-    },
-    "api/*.go": {
-      "memory": 1024,
-      "maxDuration": 10
     }
   }
 }
