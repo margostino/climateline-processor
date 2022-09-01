@@ -3,21 +3,16 @@ package api
 import (
 	"encoding/json"
 	"github.com/margostino/climateline-processor/common"
+	"github.com/margostino/climateline-processor/domain"
 	"net/http"
+	"os"
 	"strconv"
 )
 
-type Item struct {
-	Id        int    `json:"id"`
-	Timestamp string `json:"timestamp"`
-	Title     string `json:"title"`
-	Link      string `json:"link"`
-	Status    string `json:"status"`
-}
+type Request []domain.Item
 
-type Request []Item
-
-var cache = make(map[int]Item)
+var cache = make(map[int]domain.Item)
+var baseCacheUrl = os.Getenv("CACHE_BASE_URL")
 
 func Cache(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -26,7 +21,7 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 
 		defer r.Body.Close()
 		w.WriteHeader(http.StatusCreated)
-		var items []Item
+		var items []domain.Item
 		err := json.NewDecoder(r.Body).Decode(&items)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -41,14 +36,14 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 		idStr := r.URL.Query().Get("id")
 		id, parseErr := strconv.Atoi(idStr)
 
-		if common.Fail(parseErr, "when parsing ID from path") {
+		if common.IsError(parseErr, "when parsing ID from path") {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
 		if item, ok := cache[id]; ok {
 			w.WriteHeader(http.StatusOK)
 			response, marshalErr := json.Marshal(item)
-			if common.Fail(marshalErr, "when marshaling item response") {
+			if common.IsError(marshalErr, "when marshaling item response") {
 				w.WriteHeader(http.StatusBadRequest)
 			} else {
 				w.Write(response)
@@ -59,7 +54,7 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 
 	} else if r.Method == "DELETE" {
 		w.WriteHeader(http.StatusCreated)
-		cache = make(map[int]Item)
+		cache = make(map[int]domain.Item)
 	} else {
 
 		w.WriteHeader(http.StatusBadRequest)

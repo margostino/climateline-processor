@@ -1,10 +1,12 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/margostino/climateline-processor/common"
+	"github.com/margostino/climateline-processor/domain"
 	"github.com/mmcdole/gofeed"
 	"log"
 	"net/http"
@@ -19,12 +21,21 @@ func Job(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	//log.Printf("Cached Items (RunJob): %d", len(cache.Items))
-	//cache.Items = make(map[int]*gofeed.Item)
+
+	var items = make([]*domain.Item, 0)
+
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
-	for id, item := range feed.Items {
+	for id, entry := range feed.Items {
+		item := &domain.Item{
+			Id:        id,
+			Timestamp: entry.Updated,
+			Title:     entry.Title,
+			Link:      entry.Link,
+			Content:   entry.Content,
+		}
 		Notify(item, id)
-		//cache.Items[id] = item
+		items = append(items, item)
 	}
 
 	resp := make(map[string]string)
@@ -38,7 +49,8 @@ func Job(w http.ResponseWriter, r *http.Request) {
 		w.Write(jsonResp)
 	}
 
-	Ask()
+	UpdateCache(items)
+	AskForUpdates()
 
 	return
 }
@@ -51,13 +63,13 @@ func NewBot() *tgbotapi.BotAPI {
 	return client
 }
 
-func Notify(item *gofeed.Item, id int) {
-	message := fmt.Sprintf("🔔 New article! \n🔑 ID: %d\n🗓 Date: %s\n📖 Content: %s\n", id, item.Updated, item.Content)
+func Notify(item *domain.Item, id int) {
+	message := fmt.Sprintf("🔔 New article! \n🔑 ID: %d\n🗓 Date: %s\n📖 Content: %s\n", id, item.Timestamp, item.Content)
 	Send(message)
 }
 
-func Ask() {
-	message := "Do you want to upload new article? [ Yes | No ]"
+func AskForUpdates() {
+	message := "Do you want to upload new article? [ No | Yes {ID} ]\nExample: Yes 1"
 	Send(message)
 }
 
@@ -66,4 +78,18 @@ func Send(message string) {
 	msg := tgbotapi.NewMessage(userId, message)
 	msg.ReplyMarkup = nil
 	bot.Send(msg)
+}
+
+func UpdateCache(items []*domain.Item) {
+	jsonData, err := json.Marshal(items)
+
+	if !common.IsError(err, "when updating cache") {
+		resp, err := http.Post(baseCacheUrl, "application/json", bytes.NewBuffer(jsonData))
+
+		if resp.Status != "200" {
+			log.Printf("Updating cache was not successful. Status: %d\n", resp.StatusCode)
+		}
+		common.SilentCheck(err, "in response of caching")
+	}
+
 }
