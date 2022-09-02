@@ -9,6 +9,7 @@ import (
 	"github.com/google/go-github/v45/github"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/domain"
+	"github.com/margostino/climateline-processor/security"
 	"golang.org/x/oauth2"
 	"io/ioutil"
 	"log"
@@ -27,75 +28,81 @@ type Response struct {
 var githubClient = getGithubClient()
 
 func Bot(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-	var reply string
-	w.Header().Add("Content-Type", "application/json")
 
-	//log.Printf("Cached Items (Reply): %d", len(cache.Items))
+	if security.IsAuthorized(r) {
+		defer r.Body.Close()
+		var reply string
+		w.Header().Add("Content-Type", "application/json")
 
-	body, _ := ioutil.ReadAll(r.Body)
-	var update tgbotapi.Update
-	if err := json.Unmarshal(body, &update); err != nil {
-		log.Fatal("Error updating →", err)
-	}
+		//log.Printf("Cached Items (Reply): %d", len(cache.Items))
 
-	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
-
-	input := update.Message.Text
-	if isValidInput(input) {
-		if shouldPush(input) {
-			ids := extractIds(input)
-			items := getCachedItems(ids)
-			reply = items[0].Link
-
-			for _, item := range items {
-				content := generateArticle(&item)
-				message := "new article from workflow"
-				options := &github.RepositoryContentFileOptions{
-					Content: []byte(content),
-					Message: &message,
-				}
-				path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(item.Title), " ", "_"))
-				contentResponse, response, err := githubClient.Repositories.CreateFile(context.Background(), "margostino", "climateline", path, options)
-				common.SilentCheck(err, "when creating new article on repository")
-				println(contentResponse)
-				println(response)
-			}
-
-			// TODO: commit git new article
-		} else if shouldEdit(input) {
-			instructions := strings.Split(input, "\n")
-			edit := &domain.Edit{
-				Title:      instructions[1],
-				SourceName: instructions[2],
-				Location:   instructions[3],
-				Category:   instructions[4],
-			}
-			id := extractId(instructions[0])
-
-			if updateCachedItems(id, edit) {
-				reply = "✅ article updated"
-			} else {
-				reply = "🔴 article update failed!"
-			}
-
-		} else {
-			reply = "👌"
+		body, _ := ioutil.ReadAll(r.Body)
+		var update tgbotapi.Update
+		if err := json.Unmarshal(body, &update); err != nil {
+			log.Fatal("Error updating →", err)
 		}
+
+		log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
+
+		input := update.Message.Text
+		if isValidInput(input) {
+			if shouldPush(input) {
+				ids := extractIds(input)
+				items := getCachedItems(ids)
+				reply = items[0].Link
+
+				for _, item := range items {
+					content := generateArticle(&item)
+					message := "new article from workflow"
+					options := &github.RepositoryContentFileOptions{
+						Content: []byte(content),
+						Message: &message,
+					}
+					path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(item.Title), " ", "_"))
+					contentResponse, response, err := githubClient.Repositories.CreateFile(context.Background(), "margostino", "climateline", path, options)
+					common.SilentCheck(err, "when creating new article on repository")
+					println(contentResponse)
+					println(response)
+				}
+
+				// TODO: commit git new article
+			} else if shouldEdit(input) {
+				instructions := strings.Split(input, "\n")
+				edit := &domain.Edit{
+					Title:      instructions[1],
+					SourceName: instructions[2],
+					Location:   instructions[3],
+					Category:   instructions[4],
+				}
+				id := extractId(instructions[0])
+
+				if updateCachedItems(id, edit) {
+					reply = "✅ article updated"
+				} else {
+					reply = "🔴 article update failed!"
+				}
+
+			} else {
+				reply = "👌"
+			}
+		} else {
+			reply = "Input is not valid"
+			log.Println(reply)
+		}
+
+		data := Response{
+			Msg:    reply,
+			Method: "sendMessage",
+			ChatID: update.Message.Chat.ID,
+		}
+
+		message, _ := json.Marshal(data)
+		log.Printf("Response %s", string(message))
+		fmt.Fprintf(w, string(message))
+
 	} else {
-		reply = "Input is not valid"
-		log.Println(reply)
+		w.WriteHeader(http.StatusUnauthorized)
 	}
-
-	data := Response{
-		Msg:    reply,
-		Method: "sendMessage",
-		ChatID: update.Message.Chat.ID,
-	}
-
-	message, _ := json.Marshal(data)
-	log.Printf("Response %s", string(message))
-	fmt.Fprintf(w, string(message))
 
 }
 

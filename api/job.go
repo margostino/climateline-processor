@@ -7,6 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/domain"
+	"github.com/margostino/climateline-processor/security"
 	"github.com/mmcdole/gofeed"
 	"log"
 	"net/http"
@@ -21,10 +22,8 @@ type JobResponse struct {
 }
 
 func Job(w http.ResponseWriter, r *http.Request) {
-	jobSecret := os.Getenv("CLIMATELINE_JOB_SECRET")
-	requestSecret := r.Header.Get("Authorization")
 
-	if requestSecret == fmt.Sprintf("Bearer %s", jobSecret) {
+	if security.IsAuthorized(r) {
 		w.WriteHeader(http.StatusCreated)
 		w.Header().Set("Content-Type", "application/json")
 
@@ -61,7 +60,6 @@ func Job(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
-		log.Printf("Job secret is wrong!")
 	}
 
 	return
