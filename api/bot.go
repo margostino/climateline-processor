@@ -137,11 +137,14 @@ func extractId(input string) string {
 }
 
 func getCachedItems(ids string) []domain.Item {
+	client := &http.Client{}
 	var items []domain.Item
 	url := fmt.Sprintf("%s?ids=%s", baseCacheUrl, ids)
-	resp, err := http.Get(url)
+	request, err := http.NewRequest(http.MethodGet, url, nil)
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
+	response, err := client.Do(request)
 	common.SilentCheck(err, "when getting cached item")
-	err = json.NewDecoder(resp.Body).Decode(&items)
+	err = json.NewDecoder(response.Body).Decode(&items)
 	common.SilentCheck(err, "when decoding response from cache")
 	return items
 }
@@ -153,6 +156,7 @@ func updateCachedItems(id string, edit *domain.Edit) bool {
 
 	if !common.IsError(err, "when marshaling edit data") {
 		request, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(json))
+		request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
 		response, err := client.Do(request)
 		common.SilentCheck(err, "when updating cached item")
 		return response.StatusCode == 204
