@@ -21,39 +21,48 @@ type JobResponse struct {
 }
 
 func Job(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusCreated)
-	w.Header().Set("Content-Type", "application/json")
+	jobSecret := os.Getenv("CLIMATELINE_JOB_SECRET")
+	requestSecret := r.Header.Get("Authorization")
 
-	//log.Printf("Cached Items (RunJob): %d", len(cache.Items))
+	if requestSecret == fmt.Sprintf("Bearer %s", jobSecret) {
+		w.WriteHeader(http.StatusCreated)
+		w.Header().Set("Content-Type", "application/json")
 
-	var items = make([]*domain.Item, 0)
+		//log.Printf("Cached Items (RunJob): %d", len(cache.Items))
 
-	fp := gofeed.NewParser()
-	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
-	for id, entry := range feed.Items {
-		item := &domain.Item{
-			Id:        strconv.Itoa(id + 1),
-			Timestamp: entry.Updated,
-			Title:     entry.Title,
-			Link:      entry.Link,
-			Content:   entry.Content,
+		var items = make([]*domain.Item, 0)
+
+		fp := gofeed.NewParser()
+		feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
+		for id, entry := range feed.Items {
+			item := &domain.Item{
+				Id:        strconv.Itoa(id + 1),
+				Timestamp: entry.Updated,
+				Title:     entry.Title,
+				Link:      entry.Link,
+				Content:   entry.Content,
+			}
+			Notify(item)
+			items = append(items, item)
 		}
-		Notify(item)
-		items = append(items, item)
-	}
 
-	response := JobResponse{
-		Items: len(items),
-	}
-	jsonResp, err := json.Marshal(response)
-	if err != nil {
-		fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
+		response := JobResponse{
+			Items: len(items),
+		}
+		jsonResp, err := json.Marshal(response)
+		if err != nil {
+			fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
+		} else {
+			w.Write(jsonResp)
+		}
+
+		UpdateCache(items)
+		AskForUpdates()
+
 	} else {
-		w.Write(jsonResp)
+		w.WriteHeader(http.StatusUnauthorized)
+		log.Printf("Job secret is wrong!")
 	}
-
-	UpdateCache(items)
-	AskForUpdates()
 
 	return
 }
