@@ -102,6 +102,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
+		log.Printf("Unauthorized to handle Bot communication")
 	}
 
 }
