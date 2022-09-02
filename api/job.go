@@ -28,7 +28,7 @@ func Job(w http.ResponseWriter, r *http.Request) {
 	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
 	for id, entry := range feed.Items {
 		item := &domain.Item{
-			Id:        id,
+			Id:        string(id),
 			Timestamp: entry.Updated,
 			Title:     entry.Title,
 			Link:      entry.Link,

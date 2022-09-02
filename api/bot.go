@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -38,9 +37,9 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 	input := sanitizeInput(update.Message)
 	if isValidInput(input) {
 		if shouldUpload(input) {
-			id := extractId(input)
-			item := getCachedItem(id)
-			reply = item.Link
+			ids := extractIds(input)
+			items := getCachedItems(ids)
+			reply = items[0].Link
 			// TODO: commit git new article
 		} else {
 			reply = "👌"
@@ -67,7 +66,7 @@ func sanitizeInput(message *tgbotapi.Message) string {
 }
 
 func isValidInput(input string) bool {
-	match, err := regexp.MatchString(`^((yes [0-9]*)|(no))$`, input)
+	match, err := regexp.MatchString(`^((yes ([0-9]+\s*)+)|(no))$`, input)
 	common.SilentCheck(err, "when matching input with regex")
 	return match
 }
@@ -76,18 +75,17 @@ func shouldUpload(input string) bool {
 	return strings.Contains(input, "yes")
 }
 
-func extractId(input string) int {
-	id, err := strconv.Atoi(strings.Split(input, " ")[1])
-	common.SilentCheck(err, "must not reach this state")
-	return id
+func extractIds(input string) string {
+	ids := strings.Join(strings.Split(strings.TrimPrefix(input, "yes "), " "), ",")
+	return ids
 }
 
-func getCachedItem(id int) domain.Item {
-	var item domain.Item
-	url := fmt.Sprintf("%s?id=%d", baseCacheUrl, id)
+func getCachedItems(ids string) []domain.Item {
+	var items []domain.Item
+	url := fmt.Sprintf("%s?ids=%s", baseCacheUrl, ids)
 	resp, err := http.Get(url)
 	common.SilentCheck(err, "when getting cached item")
-	err = json.NewDecoder(resp.Body).Decode(&item)
+	err = json.NewDecoder(resp.Body).Decode(&items)
 	common.SilentCheck(err, "when decoding response from cache")
-	return item
+	return items
 }

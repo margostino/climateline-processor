@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/domain"
+	"log"
 	"net/http"
 	"os"
-	"strconv"
+	"strings"
 )
 
 type Request []domain.Item
 
-var cache = make(map[int]domain.Item)
+var cache = make(map[string]domain.Item)
 var baseCacheUrl = os.Getenv("CACHE_BASE_URL")
 
 func Cache(w http.ResponseWriter, r *http.Request) {
@@ -32,17 +33,21 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else if r.Method == "GET" {
+		var items = make([]*domain.Item, 0)
+		idsQuery := r.URL.Query().Get("ids")
+		ids := strings.Split(idsQuery, ",")
 
-		idStr := r.URL.Query().Get("id")
-		id, parseErr := strconv.Atoi(idStr)
-
-		if common.IsError(parseErr, "when parsing ID from path") {
-			w.WriteHeader(http.StatusBadRequest)
+		for _, id := range ids {
+			if item, ok := cache[id]; ok {
+				items = append(items, &item)
+			} else {
+				log.Printf("Item %s not found\n", id)
+			}
 		}
 
-		if item, ok := cache[id]; ok {
+		if len(items) > 0 {
 			w.WriteHeader(http.StatusOK)
-			response, marshalErr := json.Marshal(item)
+			response, marshalErr := json.Marshal(items)
 			if common.IsError(marshalErr, "when marshaling item response") {
 				w.WriteHeader(http.StatusBadRequest)
 			} else {
@@ -54,7 +59,7 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 
 	} else if r.Method == "DELETE" {
 		w.WriteHeader(http.StatusCreated)
-		cache = make(map[int]domain.Item)
+		cache = make(map[string]domain.Item)
 	} else {
 
 		w.WriteHeader(http.StatusBadRequest)
