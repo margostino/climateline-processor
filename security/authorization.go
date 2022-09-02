@@ -11,3 +11,9 @@ func IsAuthorized(r *http.Request) bool {
 	requestSecret := r.Header.Get("Authorization")
 	return requestSecret == fmt.Sprintf("Bearer %s", jobSecret)
 }
+
+func IsAdmin(r *http.Request) bool {
+	jobSecret := os.Getenv("CLIMATELINE_JOB_SECRET")
+	requestSecret := r.Header.Get("Authorization")
+	return requestSecret == fmt.Sprintf("Bearer %s", jobSecret)
+}
