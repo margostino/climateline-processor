@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -40,9 +41,9 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
 
-	input := sanitizeInput(update.Message)
+	input := update.Message.Text
 	if isValidInput(input) {
-		if shouldUpload(input) {
+		if shouldPush(input) {
 			ids := extractIds(input)
 			items := getCachedItems(ids)
 			reply = items[0].Link
@@ -62,6 +63,22 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// TODO: commit git new article
+		} else if shouldEdit(input) {
+			instructions := strings.Split(input, "\n")
+			edit := &domain.Edit{
+				Title:      instructions[1],
+				SourceName: instructions[2],
+				Location:   instructions[3],
+				Category:   instructions[4],
+			}
+			id := extractId(instructions[0])
+
+			if updateCachedItems(id, edit) {
+				reply = "✅ article updated"
+			} else {
+				reply = "🔴 article update failed!"
+			}
+
 		} else {
 			reply = "👌"
 		}
@@ -82,23 +99,34 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func sanitizeInput(message *tgbotapi.Message) string {
-	return strings.Trim(strings.ToLower(message.Text), " ")
+func sanitizeInput(input string) string {
+	return strings.Trim(strings.ToLower(input), " ")
 }
 
 func isValidInput(input string) bool {
-	match, err := regexp.MatchString(`^((yes ([0-9]+\s*)+)|(no))$`, input)
+	sanitizedInput := sanitizeInput(input)
+	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires)))$`, sanitizedInput)
 	common.SilentCheck(err, "when matching input with regex")
 	return match
 }
 
-func shouldUpload(input string) bool {
-	return strings.Contains(input, "yes")
+func shouldPush(input string) bool {
+	sanitizedInput := sanitizeInput(input)
+	return strings.Contains(sanitizedInput, "push")
+}
+
+func shouldEdit(input string) bool {
+	sanitizedInput := sanitizeInput(input)
+	return strings.Contains(sanitizedInput, "edit")
 }
 
 func extractIds(input string) string {
-	ids := strings.Join(strings.Split(strings.TrimPrefix(input, "yes "), " "), ",")
+	ids := strings.Join(strings.Split(strings.TrimPrefix(input, "push "), " "), ",")
 	return ids
+}
+
+func extractId(input string) string {
+	return strings.TrimPrefix(input, "edit ")
 }
 
 func getCachedItems(ids string) []domain.Item {
@@ -111,7 +139,35 @@ func getCachedItems(ids string) []domain.Item {
 	return items
 }
 
+func updateCachedItems(id string, edit *domain.Edit) bool {
+	client := &http.Client{}
+	url := fmt.Sprintf("%s?id=%s", baseCacheUrl, id)
+	json, err := json.Marshal(edit)
+
+	if !common.IsError(err, "when marshaling edit data") {
+		request, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(json))
+		response, err := client.Do(request)
+		common.SilentCheck(err, "when updating cached item")
+		return response.StatusCode == 204
+	}
+	return false
+}
+
 func generateArticle(item *domain.Item) string {
+	var icon string
+	switch item.Category {
+	case "agreements":
+		icon = "handshake"
+	case "assessment":
+		icon = "file-text"
+	case "awareness":
+		icon = "seedling"
+	case "warming":
+		icon = "thermometer-three-quarters"
+	case "wildfires":
+		icon = "fires"
+	}
+
 	return fmt.Sprintf("---\n"+
 		"title: '%s'\n"+
 		"date: '%s'\n"+
@@ -121,7 +177,7 @@ func generateArticle(item *domain.Item) string {
 		"icon: %s\n"+
 		"---\n\n"+
 		"%s\n",
-		item.Title, item.Timestamp, item.Link, "todo", "todo", "fire", item.Content)
+		item.Title, item.Timestamp, item.Link, item.SourceName, item.Location, icon, item.Content)
 }
 
 func getGithubClient() *github.Client {

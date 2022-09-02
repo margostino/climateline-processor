@@ -32,6 +32,28 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 			cache[item.Id] = item
 		}
 
+	} else if r.Method == "PUT" {
+
+		defer r.Body.Close()
+		w.WriteHeader(http.StatusNoContent)
+		var edit domain.Edit
+		id := r.URL.Query().Get("id")
+		err := json.NewDecoder(r.Body).Decode(&edit)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		cache[id] = domain.Item{
+			Id:         id,
+			Timestamp:  cache[id].Timestamp,
+			Link:       cache[id].Link,
+			Content:    cache[id].Content,
+			Title:      edit.Title,
+			SourceName: edit.SourceName,
+			Location:   edit.Location,
+			Category:   edit.Category,
+		}
+
 	} else if r.Method == "GET" {
 		var items = make([]*domain.Item, 0)
 		idsQuery := r.URL.Query().Get("ids")
@@ -58,7 +80,7 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else if r.Method == "DELETE" {
-		w.WriteHeader(http.StatusCreated)
+		w.WriteHeader(http.StatusOK)
 		cache = make(map[string]domain.Item)
 	} else {
 

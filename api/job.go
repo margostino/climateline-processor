@@ -16,6 +16,10 @@ import (
 
 var bot = NewBot()
 
+type JobResponse struct {
+	Items int `json:"items"`
+}
+
 func Job(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
@@ -28,21 +32,20 @@ func Job(w http.ResponseWriter, r *http.Request) {
 	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
 	for id, entry := range feed.Items {
 		item := &domain.Item{
-			Id:        string(id),
+			Id:        strconv.Itoa(id + 1),
 			Timestamp: entry.Updated,
 			Title:     entry.Title,
 			Link:      entry.Link,
 			Content:   entry.Content,
 		}
-		Notify(item, id)
+		Notify(item)
 		items = append(items, item)
 	}
 
-	resp := make(map[string]string)
-	resp["message"] = "Hello World from Go"
-	resp["language"] = "go"
-	resp["cloud"] = "Hosted on Vercel!"
-	jsonResp, err := json.Marshal(resp)
+	response := JobResponse{
+		Items: len(items),
+	}
+	jsonResp, err := json.Marshal(response)
 	if err != nil {
 		fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
 	} else {
@@ -63,23 +66,33 @@ func NewBot() *tgbotapi.BotAPI {
 	return client
 }
 
-func Notify(item *domain.Item, id int) {
+func Notify(item *domain.Item) {
 	message := fmt.Sprintf("🔔 New article! \n"+
-		"🔑 ID: %d\n"+
+		"🔑 ID: %s\n"+
 		"🗓 Date: %s\n"+
 		"💡 Title: %s\n"+
 		"🔗 Link: %s\n"+
 		"📖 Content: %s\n",
-		id, item.Timestamp, item.Title, item.Link, item.Content)
+		item.Id, item.Timestamp, item.Title, item.Link, item.Content)
 	Send(message)
 }
 
 func AskForUpdates() {
 	message := "❓ What do you want to do?\n" +
 		"➡️ edit {id}\n" +
+		"{new title}\n" +
+		"{source name}\n" +
+		"{location}\n" +
+		"{category[agreements | assessment | awareness | warming | wildfires]}\n" +
+		"⚡️️ Example:\n" +
+		"edit 1\n" +
+		"Massive heatwaves in Europe\n" +
+		"Washington Post\n" +
+		"Europe\n" +
+		"warming\n" +
 		"➡️ push {ids}\n" +
-		"⚡️️ Example:  edit 1\n" +
-		"⚡️️ Example:  push 1 2"
+		"⚡️️ Example:\n" +
+		"push 1 2"
 	Send(message)
 }
 
@@ -94,10 +107,10 @@ func UpdateCache(items []*domain.Item) {
 	jsonData, err := json.Marshal(items)
 
 	if !common.IsError(err, "when updating cache") {
-		resp, err := http.Post(baseCacheUrl, "application/json", bytes.NewBuffer(jsonData))
+		response, err := http.Post(baseCacheUrl, "application/json", bytes.NewBuffer(jsonData))
 
-		if resp.Status != "200" {
-			log.Printf("Updating cache was not successful. Status: %d\n", resp.StatusCode)
+		if response.StatusCode != 201 {
+			log.Printf("Updating cache was not successful. Status: %d\n", response.StatusCode)
 		}
 		common.SilentCheck(err, "in response of caching")
 	}
