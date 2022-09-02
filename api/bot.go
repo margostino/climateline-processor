@@ -37,20 +37,18 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		"RemoteAddr: %s",
 		r.Method, r.Proto, r.Header.Get("User-Agent"), r.Host, r.RequestURI, r.RemoteAddr)
 
-	if true || security.IsAuthorized(r) {
+	var reply string
+	body, _ := ioutil.ReadAll(r.Body)
+	var update tgbotapi.Update
+	if err := json.Unmarshal(body, &update); err != nil {
+		log.Fatal("Error updating →", err)
+	}
+
+	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
+
+	if security.IsAdmin(update.Message.From.UserName, update.Message.Chat.ID, r) {
 		defer r.Body.Close()
-		var reply string
 		w.Header().Add("Content-Type", "application/json")
-
-		//log.Printf("Cached Items (Reply): %d", len(cache.Items))
-
-		body, _ := ioutil.ReadAll(r.Body)
-		var update tgbotapi.Update
-		if err := json.Unmarshal(body, &update); err != nil {
-			log.Fatal("Error updating →", err)
-		}
-
-		log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
 
 		input := update.Message.Text
 		if isValidInput(input) {
@@ -98,21 +96,21 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 			log.Println(reply)
 		}
 
-		data := Response{
-			Msg:    reply,
-			Method: "sendMessage",
-			ChatID: update.Message.Chat.ID,
-		}
-
-		message, _ := json.Marshal(data)
-		log.Printf("Response %s", string(message))
-		fmt.Fprintf(w, string(message))
-
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
-		log.Printf("Unauthorized to handle Bot communication")
+		reply := "Unauthorized to handle Bot communication"
+		log.Printf(reply)
 	}
 
+	data := Response{
+		Msg:    reply,
+		Method: "sendMessage",
+		ChatID: update.Message.Chat.ID,
+	}
+
+	message, _ := json.Marshal(data)
+	log.Printf("Response %s", string(message))
+	fmt.Fprintf(w, string(message))
 }
 
 func sanitizeInput(input string) string {
