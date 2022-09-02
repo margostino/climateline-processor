@@ -64,7 +64,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 						Content: []byte(content),
 						Message: &message,
 					}
-					path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(item.Title), " ", "_"))
+					path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(item.Title), " ", "-"))
 					contentResponse, response, err := githubClient.Repositories.CreateFile(context.Background(), "margostino", "climateline", path, options)
 					common.SilentCheck(err, "when creating new article on repository")
 					println(contentResponse)
