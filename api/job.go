@@ -111,10 +111,14 @@ func Send(message string) {
 }
 
 func UpdateCache(items []*domain.Item) {
-	jsonData, err := json.Marshal(items)
+	client := &http.Client{}
+	json, err := json.Marshal(items)
 
 	if !common.IsError(err, "when updating cache") {
-		response, err := http.Post(baseCacheUrl, "application/json", bytes.NewBuffer(jsonData))
+		request, err := http.NewRequest(http.MethodPost, baseCacheUrl, bytes.NewBuffer(json))
+		request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
+		request.Header.Set("Content-Type", "application/json")
+		response, err := client.Do(request)
 
 		if response.StatusCode != 201 {
 			log.Printf("Updating cache was not successful. Status: %d\n", response.StatusCode)
