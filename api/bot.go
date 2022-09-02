@@ -29,6 +29,14 @@ var githubClient = getGithubClient()
 
 func Bot(w http.ResponseWriter, r *http.Request) {
 
+	log.Printf("Method: %s "+
+		"Proto: %s "+
+		"User-Agent: %s, "+
+		"Host: %s, "+
+		"RequestURI: %s, "+
+		"RemoteAddr: %s",
+		r.Method, r.Proto, r.Header.Get("User-Agent"), r.Host, r.RequestURI, r.RemoteAddr)
+
 	if true || security.IsAuthorized(r) {
 		defer r.Body.Close()
 		var reply string
