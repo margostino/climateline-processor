@@ -64,12 +64,22 @@ func NewBot() *tgbotapi.BotAPI {
 }
 
 func Notify(item *domain.Item, id int) {
-	message := fmt.Sprintf("🔔 New article! \n🔑 ID: %d\n🗓 Date: %s\n📖 Content: %s\n", id, item.Timestamp, item.Content)
+	message := fmt.Sprintf("🔔 New article! \n"+
+		"🔑 ID: %d\n"+
+		"🗓 Date: %s\n"+
+		"💡 Title: %s\n"+
+		"🔗 Link: %s\n"+
+		"📖 Content: %s\n",
+		id, item.Timestamp, item.Title, item.Link, item.Content)
 	Send(message)
 }
 
 func AskForUpdates() {
-	message := "Do you want to upload new article? [ No | Yes {ID} ]\nExample: Yes 1"
+	message := "❓ What do you want to do?\n" +
+		"➡️ edit {id}\n" +
+		"➡️ push {ids}\n" +
+		"⚡️️ Example:  edit 1\n" +
+		"⚡️️ Example:  push 1 2"
 	Send(message)
 }
 

@@ -1,14 +1,18 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/google/go-github/v45/github"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/domain"
+	"golang.org/x/oauth2"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -18,6 +22,8 @@ type Response struct {
 	ChatID int64  `json:"chat_id"`
 	Method string `json:"method"`
 }
+
+var githubClient = getGithubClient()
 
 func Bot(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -40,6 +46,21 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 			ids := extractIds(input)
 			items := getCachedItems(ids)
 			reply = items[0].Link
+
+			for _, item := range items {
+				content := generateArticle(&item)
+				message := "new article from workflow"
+				options := &github.RepositoryContentFileOptions{
+					Content: []byte(content),
+					Message: &message,
+				}
+				path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(item.Title), " ", "_"))
+				contentResponse, response, err := githubClient.Repositories.CreateFile(context.Background(), "margostino", "climateline", path, options)
+				common.SilentCheck(err, "when creating new article on repository")
+				println(contentResponse)
+				println(response)
+			}
+
 			// TODO: commit git new article
 		} else {
 			reply = "👌"
@@ -88,4 +109,27 @@ func getCachedItems(ids string) []domain.Item {
 	err = json.NewDecoder(resp.Body).Decode(&items)
 	common.SilentCheck(err, "when decoding response from cache")
 	return items
+}
+
+func generateArticle(item *domain.Item) string {
+	return fmt.Sprintf("---\n"+
+		"title: '%s'\n"+
+		"date: '%s'\n"+
+		"source_url: '%s'\n"+
+		"source_name: '%s'\n"+
+		"location: '%s'\n"+
+		"icon: %s\n"+
+		"---\n\n"+
+		"%s\n",
+		item.Title, item.Timestamp, item.Link, "todo", "todo", "fire", item.Content)
+}
+
+func getGithubClient() *github.Client {
+	var githubAccessToken = os.Getenv("GITHUB_ACCESS_TOKEN")
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: githubAccessToken},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	return github.NewClient(tc)
 }
