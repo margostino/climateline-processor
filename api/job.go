@@ -21,13 +21,13 @@ type JobResponse struct {
 	Items int `json:"items"`
 }
 
+var baseJobUrl = os.Getenv("JOB_BASE_URL")
+
 func Job(w http.ResponseWriter, r *http.Request) {
 
 	if security.IsAuthorized(r) {
-		w.WriteHeader(http.StatusCreated)
+		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-
-		//log.Printf("Cached Items (RunJob): %d", len(cache.Items))
 
 		var items = make([]*domain.Item, 0)
 
@@ -78,7 +78,7 @@ func Notify(item *domain.Item) {
 		"🔑 ID: %s\n"+
 		"🗓 Date: %s\n"+
 		"💡 Title: %s\n"+
-		"🔗 Link: %s\n"+
+		"🔗 Link: <a href='%s'>Here</a>\n"+
 		"📖 Content: %s\n",
 		item.Id, item.Timestamp, item.Title, item.Link, item.Content)
 	Send(message)
@@ -107,6 +107,7 @@ func Send(message string) {
 	userId, _ := strconv.ParseInt(os.Getenv("TELEGRAM_ADMIN_USER"), 10, 64)
 	msg := tgbotapi.NewMessage(userId, message)
 	msg.ReplyMarkup = nil
+	msg.ParseMode = "HTML"
 	bot.Send(msg)
 }
 

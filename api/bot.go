@@ -71,7 +71,14 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					println(response)
 				}
 
-				// TODO: commit git new article
+			} else if shouldRunJob(input) {
+
+				if runJob() {
+					reply = "✅ Job completed successfully"
+				} else {
+					reply = "🔴 Job failed"
+				}
+
 			} else if shouldEdit(input) {
 				instructions := strings.Split(input, "\n")
 				edit := &domain.Edit{
@@ -119,7 +126,7 @@ func sanitizeInput(input string) string {
 
 func isValidInput(input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires)))$`, sanitizedInput)
+	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires))|run)$`, sanitizedInput)
 	common.SilentCheck(err, "when matching input with regex")
 	return match
 }
@@ -127,6 +134,11 @@ func isValidInput(input string) bool {
 func shouldPush(input string) bool {
 	sanitizedInput := sanitizeInput(input)
 	return strings.Contains(sanitizedInput, "push")
+}
+
+func shouldRunJob(input string) bool {
+	sanitizedInput := sanitizeInput(input)
+	return strings.Contains(sanitizedInput, "run")
 }
 
 func shouldEdit(input string) bool {
@@ -169,6 +181,15 @@ func updateCachedItems(id string, edit *domain.Edit) bool {
 		return response.StatusCode == 204
 	}
 	return false
+}
+
+func runJob() bool {
+	client := &http.Client{}
+	request, err := http.NewRequest(http.MethodGet, baseJobUrl, nil)
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
+	response, err := client.Do(request)
+	common.SilentCheck(err, "when triggering job")
+	return response.StatusCode == 200
 }
 
 func generateArticle(item *domain.Item) string {

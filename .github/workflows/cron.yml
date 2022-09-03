@@ -1,7 +1,7 @@
 name: climateline-job
 on:
   schedule:
-    - cron: '59 23 * * *'
+    - cron: '* 22 * * *'
 jobs:
   cron:
     runs-on: ubuntu-latest
