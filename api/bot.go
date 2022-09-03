@@ -79,6 +79,16 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					reply = "🔴 Job failed"
 				}
 
+			} else if shouldShow(input) {
+				id := strings.TrimPrefix(input, "show ")
+				items := getCachedItems(id)
+
+				if len(items) > 0 {
+					reply = buildShowReply(items[0])
+				} else {
+					reply = fmt.Sprintf("🤷‍ There is not item for ID %s", id)
+				}
+
 			} else if shouldEdit(input) {
 				instructions := strings.Split(input, "\n")
 				edit := &domain.Edit{
@@ -87,7 +97,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					Location:   instructions[3],
 					Category:   instructions[4],
 				}
-				id := extractId(instructions[0])
+				id := strings.TrimPrefix(instructions[0], "edit ")
 
 				if updateCachedItems(id, edit) {
 					reply = "✅ article updated"
@@ -126,7 +136,7 @@ func sanitizeInput(input string) string {
 
 func isValidInput(input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires))|run)$`, sanitizedInput)
+	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires))|run|show [0-9]+)$`, sanitizedInput)
 	common.SilentCheck(err, "when matching input with regex")
 	return match
 }
@@ -146,13 +156,14 @@ func shouldEdit(input string) bool {
 	return strings.Contains(sanitizedInput, "edit")
 }
 
+func shouldShow(input string) bool {
+	sanitizedInput := sanitizeInput(input)
+	return strings.Contains(sanitizedInput, "show")
+}
+
 func extractIds(input string) string {
 	ids := strings.Join(strings.Split(strings.TrimPrefix(input, "push "), " "), ",")
 	return ids
-}
-
-func extractId(input string) string {
-	return strings.TrimPrefix(input, "edit ")
 }
 
 func getCachedItems(ids string) []domain.Item {
@@ -217,6 +228,19 @@ func generateArticle(item *domain.Item) string {
 		"---\n\n"+
 		"%s\n",
 		item.Title, item.Timestamp, item.Link, item.SourceName, item.Location, icon, item.Content)
+}
+
+func buildShowReply(item domain.Item) string {
+	return fmt.Sprintf("🔔 New article! \n"+
+		"🔑 ID: %s\n"+
+		"🗓 Date: %s\n"+
+		"💡 Title: %s\n"+
+		"🔗 Link: <a href='%s'>Here</a>\n"+
+		"📖 Content: %s\n"+
+		"🗳 Source: %s\n"+
+		"📍 Location: %s\n"+
+		"🏷 Category: %s\n",
+		item.Id, item.Timestamp, item.Title, item.Link, item.Content, item.SourceName, item.Location, item.Category)
 }
 
 func getGithubClient() *github.Client {
