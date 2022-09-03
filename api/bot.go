@@ -136,7 +136,7 @@ func sanitizeInput(input string) string {
 
 func isValidInput(input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires))|run|show [0-9]+)$`, sanitizedInput)
+	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires|floods|drought|health))|run|show [0-9]+)$`, sanitizedInput)
 	common.SilentCheck(err, "when matching input with regex")
 	return match
 }
