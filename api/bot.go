@@ -45,7 +45,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
-	
+
 	if security.IsAdmin(update.Message.From.UserName, update.Message.Chat.ID, r) {
 		defer r.Body.Close()
 		w.Header().Add("Content-Type", "application/json")
@@ -216,6 +216,12 @@ func generateArticle(item *domain.Item) string {
 		icon = "thermometer-three-quarters"
 	case "wildfires":
 		icon = "fires"
+	case "floods":
+		icon = "droplet"
+	case "drought":
+		icon = "droplet-slash"
+	case "health":
+		icon = "heart-pulse"
 	}
 
 	return fmt.Sprintf("---\n"+
