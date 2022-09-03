@@ -45,7 +45,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
-
+	
 	if security.IsAdmin(update.Message.From.UserName, update.Message.Chat.ID, r) {
 		defer r.Body.Close()
 		w.Header().Add("Content-Type", "application/json")
@@ -55,7 +55,6 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 			if shouldPush(input) {
 				ids := extractIds(input)
 				items := getCachedItems(ids)
-				reply = items[0].Link
 
 				for _, item := range items {
 					content := generateArticle(&item)
@@ -70,6 +69,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					println(contentResponse)
 					println(response)
 				}
+				reply = "✅ New article uploaded"
 
 			} else if shouldRunJob(input) {
 
@@ -115,7 +115,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
-		reply := "Unauthorized to handle Bot communication"
+		reply = "Unauthorized to handle Bot communication"
 		log.Printf(reply)
 	}
 
@@ -231,8 +231,7 @@ func generateArticle(item *domain.Item) string {
 }
 
 func buildShowReply(item domain.Item) string {
-	return fmt.Sprintf("🔔 New article! \n"+
-		"🔑 ID: %s\n"+
+	return fmt.Sprintf("🔑 ID: %s\n"+
 		"🗓 Date: %s\n"+
 		"💡 Title: %s\n"+
 		"🔗 Link: <a href='%s'>Here</a>\n"+
