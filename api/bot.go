@@ -95,11 +95,33 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					reply = fmt.Sprintf("🤷‍ There is not item for ID %s", id)
 				}
 
-			} else if shouldEditCategory(input) {
-				params := strings.Split(input, " ")
+			} else if shouldEditProperty(input) {
+				var edit *domain.Edit
+				sanitizedInput := sanitizeInput(input)
+				params := strings.Split(sanitizedInput, " ")
+				property := params[0]
 				id := params[1]
-				edit := &domain.Edit{
-					Category: params[2],
+				value := common.NewString(sanitizedInput).
+					TrimPrefix(fmt.Sprintf("%s %s", property, id)).
+					TrimPrefix(" ").
+					Value()
+
+				if property == "category" {
+					edit = &domain.Edit{
+						Category: value,
+					}
+				} else if property == "location" {
+					edit = &domain.Edit{
+						Location: value,
+					}
+				} else if property == "title" {
+					edit = &domain.Edit{
+						Title: value,
+					}
+				} else {
+					edit = &domain.Edit{
+						SourceName: value,
+					}
 				}
 				if updateCachedItems(id, edit) {
 					reply = "✅ article updated"
@@ -156,7 +178,7 @@ func sanitizeInput(input string) string {
 
 func isValidInput(input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires|floods|drought|health))|fetch|/fetch|show|/show|show [0-9]+|category [0-9]+ (agreements|assessment|awareness|warming|wildfires|floods|drought|health))$`, sanitizedInput)
+	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires|floods|drought|health))|fetch|/fetch|show|/show|show [0-9]+|title [0-9]+ .*?|source [0-9]+ .*?|location [0-9]+ .*?|category [0-9]+ (agreements|assessment|awareness|warming|wildfires|floods|drought|health))$`, sanitizedInput)
 	common.SilentCheck(err, "when matching input with regex")
 	return match
 }
@@ -166,9 +188,12 @@ func shouldPush(input string) bool {
 	return strings.Contains(sanitizedInput, "push")
 }
 
-func shouldEditCategory(input string) bool {
+func shouldEditProperty(input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	return strings.Contains(sanitizedInput, "category")
+	return strings.Contains(sanitizedInput, "category") ||
+		strings.Contains(sanitizedInput, "title") ||
+		strings.Contains(sanitizedInput, "source") ||
+		strings.Contains(sanitizedInput, "location")
 }
 
 func shouldFetch(input string) bool {
