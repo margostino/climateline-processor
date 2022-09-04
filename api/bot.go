@@ -81,7 +81,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 			} else if shouldShow(input) {
 				var id string
-				if input == "/show" {
+				if input == "/show" || input == "show" || input == "show all" || input == "show *" {
 					id = "*"
 				} else {
 					id = extractIds(input, "show ")
@@ -91,6 +91,8 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 				if len(items) > 0 {
 					reply = buildShowReply(items[0])
+				} else if id == "*" || id == "" || id == " " || id == "show" {
+					reply = "Cache is empty"
 				} else {
 					reply = fmt.Sprintf("🤷‍ There is not item for ID %s", id)
 				}
