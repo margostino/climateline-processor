@@ -47,7 +47,7 @@
       "parentId": null,
       "modified": 1630668006961,
       "created": 1621250505214,
-      "name": "margostino",
+      "name": "climateline",
       "description": "",
       "scope": "collection",
       "_type": "workspace"
@@ -565,7 +565,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"chat_id\": 1929798658,\n\t\"text\": \"testing direct message\",\n\t\"disable_notification\": true\n}"
+        "text": "{\n\t\"chat_id\": {some},\n\t\"text\": \"testing direct message\",\n\t\"disable_notification\": true\n}"
       },
       "parameters": [],
       "headers": [
