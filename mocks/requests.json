@@ -1,0 +1,590 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2022-09-04T14:36:45.126Z",
+  "__export_source": "insomnia.desktop.app:v2022.5.1",
+  "resources": [
+    {
+      "_id": "req_ee7a9dda3c7840638062155f45342af1",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662139200465,
+      "created": 1661866640766,
+      "url": "https://climateline-processor.vercel.app/api/job",
+      "name": "run job (remote)",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866640766,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "parentId": "wrk_7df0baae8d844a908227cd2a8ba9cafa",
+      "modified": 1661866238405,
+      "created": 1661866238405,
+      "name": "climateline",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1661866238405,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_7df0baae8d844a908227cd2a8ba9cafa",
+      "parentId": null,
+      "modified": 1630668006961,
+      "created": 1621250505214,
+      "name": "margostino",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_a1173dd14b68423ca5ee4b7fff45783e",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662139881410,
+      "created": 1661974978433,
+      "url": "https://climateline-processor.vercel.app/api/cache",
+      "name": "cache (remote)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "[\n\t{\n\t\t\"id\": 1,\n\t\t\"timestamp\": \"2022-08-31\",\n\t\t\"title\": \"some\",\n\t\t\"link\": \"some.com\",\n\t\t\"status\": \"done\"\n\t\t\n\t},\n\t{\n\t\t\"id\": 2,\n\t\t\"timestamp\": \"2022-08-30\",\n\t\t\"title\": \"other\",\n\t\t\"link\": \"other.com\",\n\t\t\"status\": \"done\"\n\t}\n]"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_a5405a97ef1d4af995e03af00d69d172"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866592096.25,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_34a35e39012f42e09bd684469ba986ae",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662154235917,
+      "created": 1661975018499,
+      "url": "https://climateline-processor.vercel.app/api/cache?ids=18",
+      "name": "cache (remote)",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866567761.375,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_7cc56fe5c24441349b4ff57ae18ebee6",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662139895659,
+      "created": 1661975065522,
+      "url": "https://climateline-processor.vercel.app/api/cache",
+      "name": "cache (remote)",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866555593.9375,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_7409c2d481844f87907066d4bc4fb531",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1661891584030,
+      "created": 1661876349823,
+      "url": "http://localhost:3000/api/job",
+      "name": "run job (vercel/local)",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1661866543426.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_39986d5a379341e58fee27aeb442f579",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662301769634,
+      "created": 1661892536364,
+      "url": "http://localhost:8080/cache",
+      "name": "cache (local)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "[\n\t{\n\t\t\"id\": \"1\",\n\t\t\"timestamp\": \"2022-08-31\",\n\t\t\"title\": \"some\",\n\t\t\"link\": \"some.com\",\n\t\t\"content\": \"some content\"\n\t\t\n\t},\n\t{\n\t\t\"id\": \"2\",\n\t\t\"timestamp\": \"2022-08-30\",\n\t\t\"title\": \"other\",\n\t\t\"link\": \"other.com\",\n\t\t\"content\": \"other content\"\n\t}\n]"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_a5405a97ef1d4af995e03af00d69d172"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866494756.75,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_c07aaab401d9419a95a5108fc0c94bd5",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662153369700,
+      "created": 1661970486770,
+      "url": "http://localhost:8080/cache?ids=18",
+      "name": "cache (local)",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866470421.875,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_46535eacadaf4ff6b7329ab7e6ef4bf1",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662139854442,
+      "created": 1661973460056,
+      "url": "http://localhost:8080/cache",
+      "name": "cache (local)",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866458254.4375,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_77edd45c83dc48fda26b3e423fc8f9d2",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662153626127,
+      "created": 1661868510647,
+      "url": "http://localhost:8080/job",
+      "name": "run job (local)",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866446087,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_b59311017fa14a03ae58b93dbff67dc6",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662301784332,
+      "created": 1662024180942,
+      "url": "http://localhost:8080/bot",
+      "name": "run bot (push/local)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"update_id\": 1,\n\t\"message\": {\n\t\t\"message_id\": 1,\n\t\t\"from\": {\n\t\t\t\"id\": 1,\n\t\t\t\"first_name\": \"mock.name\",\n\t\t\t\"username\": \"mock.username\"\t\t\t\n\t\t},\n\t\t\"chat\": {\n\t\t\t\"id\": 1\n\t\t},\t\t\n\t\t\"text\": \"push 1\"\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_3b780710c839421eb1f4416401258d11"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866348747.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_2cfd6c9580f04ef3b0311f8d67e74812",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662301780838,
+      "created": 1662128430330,
+      "url": "http://localhost:8080/bot",
+      "name": "run bot (edit/local)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"update_id\": 1,\n\t\"message\": {\n\t\t\"message_id\": 1,\n\t\t\"from\": {\n\t\t\t\"id\": 1,\n\t\t\t\"first_name\": \"mock.name\",\n\t\t\t\"username\": \"mock.username\"\t\t\t\n\t\t},\n\t\t\"chat\": {\n\t\t\t\"id\": 1\n\t\t},\t\t\n\t\t\"text\": \"edit 1\\nClimate Change is increasing Heart Attacks\\nacsh.org\\nworldwide\\nawareness\"\t\t\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_3b780710c839421eb1f4416401258d11"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866300077.75,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_007fc40627d2468faf1857125f9c1887",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662212139640,
+      "created": 1662208451600,
+      "url": "http://localhost:8080/bot",
+      "name": "run bot (run/local)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"update_id\": 1,\n\t\"message\": {\n\t\t\"message_id\": 1,\n\t\t\"from\": {\n\t\t\t\"id\": 1,\n\t\t\t\"first_name\": \"mock.name\",\n\t\t\t\"username\": \"mock.username\"\t\t\t\n\t\t},\n\t\t\"chat\": {\n\t\t\t\"id\": 1\n\t\t},\t\t\n\t\t\"text\": \"run\"\t\t\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_3b780710c839421eb1f4416401258d11"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866275742.875,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_2e773140e1ec48ba91ee4ba725685b06",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662301324316,
+      "created": 1662212035584,
+      "url": "http://localhost:8080/bot",
+      "name": "run bot (show/local)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"update_id\": 1,\n\t\"message\": {\n\t\t\"message_id\": 1,\n\t\t\"from\": {\n\t\t\t\"id\": 1,\n\t\t\t\"first_name\": \"mock.name\",\n\t\t\t\"username\": \"mock.username\"\t\t\t\n\t\t},\n\t\t\"chat\": {\n\t\t\t\"id\": 1\n\t\t},\t\t\n\t\t\"text\": \"show\"\t\t\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_3b780710c839421eb1f4416401258d11"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866263575.4375,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_c8077adf43fe430fa3786f6f21725640",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662300939103,
+      "created": 1662292779409,
+      "url": "http://localhost:8080/bot",
+      "name": "run bot (category/local)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"update_id\": 1,\n\t\"message\": {\n\t\t\"message_id\": 1,\n\t\t\"from\": {\n\t\t\t\"id\": 1,\n\t\t\t\"first_name\": \"mock.name\",\n\t\t\t\"username\": \"mock.username\"\t\t\t\n\t\t},\n\t\t\"chat\": {\n\t\t\t\"id\": 1\n\t\t},\t\t\n\t\t\"text\": \"category 1 warming\"\t\t\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_3b780710c839421eb1f4416401258d11"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866257491.7188,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_3470dabcdf0a447186c2f2d273c73fba",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1662301779581,
+      "created": 1662300949162,
+      "url": "http://localhost:8080/bot",
+      "name": "run bot (title/local)",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"update_id\": 1,\n\t\"message\": {\n\t\t\"message_id\": 1,\n\t\t\"from\": {\n\t\t\t\"id\": 1,\n\t\t\t\"first_name\": \"mock.name\",\n\t\t\t\"username\": \"mock.username\"\t\t\t\n\t\t},\n\t\t\"chat\": {\n\t\t\t\"id\": 1\n\t\t},\t\t\n\t\t\"text\": \"title 1 new title\"\t\t\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_3b780710c839421eb1f4416401258d11"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{some}"
+      },
+      "metaSortKey": -1661866254449.8594,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_496084dc22014adba558dd22117eafe4",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1661866286249,
+      "created": 1661866251408,
+      "url": "https://api.telegram.org/bot{some}/getWebhookInfo",
+      "name": "webhook info",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1661866251408,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_60fa75e164584e468e61f0b167b37977",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1661866364212,
+      "created": 1661866348655,
+      "url": "https://api.telegram.org/bot{some}/getMe",
+      "name": "get me",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1661866251383,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_439e3cbe3bc04109bae548a37022867e",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1661866529459,
+      "created": 1661866317649,
+      "url": "https://api.telegram.org/bot{some}/setWebhook?url=https://climateline-processor.vercel.app/api/bot&&allowed_updates=[\"poll\", \"poll_answer\", \"message\",\"callback_query\",\"inline_query\"]",
+      "name": "set webhook",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1661866251358,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_f932256ef89e4cb5a2971489a8b75622",
+      "parentId": "fld_7d52589acaa84365afec5983f5b5ec0a",
+      "modified": 1661971484361,
+      "created": 1661866571653,
+      "url": "https://api.telegram.org/bot{some}/sendMessage",
+      "name": "send bot message",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"chat_id\": 1929798658,\n\t\"text\": \"testing direct message\",\n\t\"disable_notification\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_865d5f43ccee4b23a9563f1d23dbf26d"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1661866251308,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    }
+  ]
+}
