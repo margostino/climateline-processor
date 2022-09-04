@@ -53,7 +53,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		input := update.Message.Text
 		if isValidInput(input) {
 			if shouldPush(input) {
-				ids := extractIds(input)
+				ids := extractIds(input, "push ")
 				items := getCachedItems(ids)
 
 				for _, item := range items {
@@ -80,7 +80,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 				}
 
 			} else if shouldShow(input) {
-				id := strings.TrimPrefix(input, "show ")
+				id := extractIds(input, "show ")
 				items := getCachedItems(id)
 
 				if len(items) > 0 {
@@ -89,6 +89,17 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					reply = fmt.Sprintf("🤷‍ There is not item for ID %s", id)
 				}
 
+			} else if shouldEditCategory(input) {
+				params := strings.Split(input, " ")
+				id := params[1]
+				edit := &domain.Edit{
+					Category: params[2],
+				}
+				if updateCachedItems(id, edit) {
+					reply = "✅ article updated"
+				} else {
+					reply = "🔴 article update failed!"
+				}
 			} else if shouldEdit(input) {
 				instructions := strings.Split(input, "\n")
 				edit := &domain.Edit{
@@ -97,7 +108,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					Location:   instructions[3],
 					Category:   instructions[4],
 				}
-				id := strings.TrimPrefix(instructions[0], "edit ")
+				id := extractIds(instructions[0], "edit ")
 
 				if updateCachedItems(id, edit) {
 					reply = "✅ article updated"
@@ -136,7 +147,7 @@ func sanitizeInput(input string) string {
 
 func isValidInput(input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires|floods|drought|health))|run|show [0-9]+)$`, sanitizedInput)
+	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires|floods|drought|health))|run|show [0-9]+|category [0-9]+ (agreements|assessment|awareness|warming|wildfires|floods|drought|health))$`, sanitizedInput)
 	common.SilentCheck(err, "when matching input with regex")
 	return match
 }
@@ -144,6 +155,11 @@ func isValidInput(input string) bool {
 func shouldPush(input string) bool {
 	sanitizedInput := sanitizeInput(input)
 	return strings.Contains(sanitizedInput, "push")
+}
+
+func shouldEditCategory(input string) bool {
+	sanitizedInput := sanitizeInput(input)
+	return strings.Contains(sanitizedInput, "category")
 }
 
 func shouldRunJob(input string) bool {
@@ -161,9 +177,13 @@ func shouldShow(input string) bool {
 	return strings.Contains(sanitizedInput, "show")
 }
 
-func extractIds(input string) string {
-	ids := strings.Join(strings.Split(strings.TrimPrefix(input, "push "), " "), ",")
-	return ids
+func extractIds(input string, prefix string) string {
+	return common.NewString(input).
+		ToLower().
+		TrimPrefix(prefix).
+		Split(" ").
+		Join(",").
+		Value()
 }
 
 func getCachedItems(ids string) []domain.Item {

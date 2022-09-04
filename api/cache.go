@@ -38,23 +38,56 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 		} else if r.Method == "PUT" {
 
 			defer r.Body.Close()
-			w.WriteHeader(http.StatusNoContent)
 			var edit domain.Edit
 			id := r.URL.Query().Get("id")
-			err := json.NewDecoder(r.Body).Decode(&edit)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-			cache[id] = domain.Item{
-				Id:         id,
-				Timestamp:  cache[id].Timestamp,
-				Link:       cache[id].Link,
-				Content:    cache[id].Content,
-				Title:      edit.Title,
-				SourceName: edit.SourceName,
-				Location:   edit.Location,
-				Category:   edit.Category,
+
+			if _, ok := cache[id]; ok {
+				w.WriteHeader(http.StatusNoContent)
+				err := json.NewDecoder(r.Body).Decode(&edit)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+
+				var title, sourceName, location, category string
+
+				if edit.Title == "" {
+					title = cache[id].Title
+				} else {
+					title = edit.Title
+				}
+
+				if edit.SourceName == "" {
+					sourceName = cache[id].SourceName
+				} else {
+					sourceName = edit.SourceName
+				}
+
+				if edit.Location == "" {
+					location = cache[id].Location
+				} else {
+					location = edit.Location
+				}
+
+				if edit.Category == "" {
+					category = cache[id].Category
+				} else {
+					category = edit.Category
+				}
+
+				cache[id] = domain.Item{
+					Id:         id,
+					Timestamp:  cache[id].Timestamp,
+					Link:       cache[id].Link,
+					Content:    cache[id].Content,
+					Title:      title,
+					SourceName: sourceName,
+					Location:   location,
+					Category:   category,
+				}
+
+			} else {
+				w.WriteHeader(http.StatusNotFound)
 			}
 
 		} else if r.Method == "GET" {
