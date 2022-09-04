@@ -56,20 +56,27 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 				ids := extractIds(input, "push ")
 				items := getCachedItems(ids)
 
-				for _, item := range items {
-					content := generateArticle(&item)
-					message := "new article from workflow"
-					options := &github.RepositoryContentFileOptions{
-						Content: []byte(content),
-						Message: &message,
+				if len(items) > 0 {
+					for _, item := range items {
+						content := generateArticle(&item)
+						message := "new article from workflow"
+						options := &github.RepositoryContentFileOptions{
+							Content: []byte(content),
+							Message: &message,
+						}
+						path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(item.Title), " ", "-"))
+						_, response, err := githubClient.Repositories.CreateFile(context.Background(), "margostino", "climateline", path, options)
+						common.SilentCheck(err, "when creating new article on repository")
+
+						if response.StatusCode == 201 {
+							reply = "✅ New article uploaded"
+						} else {
+							reply = fmt.Sprintf("🔴 Upload failed with status %s", response.Status)
+						}
 					}
-					path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(item.Title), " ", "-"))
-					contentResponse, response, err := githubClient.Repositories.CreateFile(context.Background(), "margostino", "climateline", path, options)
-					common.SilentCheck(err, "when creating new article on repository")
-					println(contentResponse)
-					println(response)
+				} else {
+					reply = "⚠️ There are not items to upload"
 				}
-				reply = "✅ New article uploaded"
 
 			} else if shouldFetch(input) {
 
