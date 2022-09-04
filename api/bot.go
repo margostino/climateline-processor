@@ -71,16 +71,22 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 				}
 				reply = "✅ New article uploaded"
 
-			} else if shouldRunJob(input) {
+			} else if shouldFetch(input) {
 
-				if runJob() {
-					reply = "✅ Job completed successfully"
+				if fetchItems() {
+					reply = "✅ Completed successfully"
 				} else {
-					reply = "🔴 Job failed"
+					reply = "🔴 Fetcher failed"
 				}
 
 			} else if shouldShow(input) {
-				id := extractIds(input, "show ")
+				var id string
+				if input == "/show" {
+					id = "*"
+				} else {
+					id = extractIds(input, "show ")
+				}
+
 				items := getCachedItems(id)
 
 				if len(items) > 0 {
@@ -142,12 +148,15 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 }
 
 func sanitizeInput(input string) string {
-	return strings.Trim(strings.ToLower(input), " ")
+	return common.NewString(input).
+		ToLower().
+		Trim(" ").
+		Value()
 }
 
 func isValidInput(input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires|floods|drought|health))|run|show [0-9]+|category [0-9]+ (agreements|assessment|awareness|warming|wildfires|floods|drought|health))$`, sanitizedInput)
+	match, err := regexp.MatchString(`^((push ([0-9]+\s*)+)|(edit [0-9]+\n.*?\n.*?\n.*?\n(agreements|assessment|awareness|warming|wildfires|floods|drought|health))|fetch|/fetch|show|/show|show [0-9]+|category [0-9]+ (agreements|assessment|awareness|warming|wildfires|floods|drought|health))$`, sanitizedInput)
 	common.SilentCheck(err, "when matching input with regex")
 	return match
 }
@@ -162,9 +171,9 @@ func shouldEditCategory(input string) bool {
 	return strings.Contains(sanitizedInput, "category")
 }
 
-func shouldRunJob(input string) bool {
+func shouldFetch(input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	return strings.Contains(sanitizedInput, "run")
+	return strings.Contains(sanitizedInput, "fetch")
 }
 
 func shouldEdit(input string) bool {
@@ -214,7 +223,7 @@ func updateCachedItems(id string, edit *domain.Edit) bool {
 	return false
 }
 
-func runJob() bool {
+func fetchItems() bool {
 	client := &http.Client{}
 	request, err := http.NewRequest(http.MethodGet, baseJobUrl, nil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))

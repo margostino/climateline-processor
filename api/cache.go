@@ -91,16 +91,25 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 			}
 
 		} else if r.Method == "GET" {
-			var items = make([]*domain.Item, 0)
+			var items = make([]domain.Item, 0)
 			idsQuery := r.URL.Query().Get("ids")
-			ids := strings.Split(idsQuery, ",")
 
-			for _, id := range ids {
-				if item, ok := cache[id]; ok {
-					items = append(items, &item)
-				} else {
-					log.Printf("Item %s not found\n", id)
+			if idsQuery == "*" {
+				for _, item := range cache {
+					items = append(items, item)
 				}
+			} else {
+				ids := strings.Split(idsQuery, ",")
+				for _, id := range ids {
+					if item, ok := cache[id]; ok {
+						items = append(items, item)
+					} else if id == "*" {
+						log.Println("Cache is empty")
+					} else {
+						log.Printf("Item %s not found\n", id)
+					}
+				}
+
 			}
 
 			if len(items) > 0 {

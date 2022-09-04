@@ -26,6 +26,11 @@ func (s *String) TrimPrefix(prefix string) *String {
 	return s
 }
 
+func (s *String) Trim(prefix string) *String {
+	s.value = strings.Trim(s.value, prefix)
+	return s
+}
+
 func (s *String) Split(separator string) *StringSlice {
 	values := &StringSlice{
 		values: strings.Split(s.value, separator),
