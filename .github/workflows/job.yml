@@ -1,4 +1,4 @@
-name: fetcher-job
+name: Fetcher Job
 on:
   schedule:
     - cron: '* 18 * * *'
