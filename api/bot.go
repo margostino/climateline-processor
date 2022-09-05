@@ -44,7 +44,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error updating →", err)
 	}
 
-	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
+	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, "update.Message.Text")
 
 	if security.IsAdmin(update.Message.From.UserName, update.Message.Chat.ID, r) {
 		defer r.Body.Close()

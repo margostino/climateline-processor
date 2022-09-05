@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestUnauthorized(t *testing.T) {
+func TestCacheUnauthorized(t *testing.T) {
 	req, err := http.NewRequest(http.MethodPost, "/cache", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -35,7 +35,7 @@ func TestNewItem(t *testing.T) {
 
 	if status := response.Code; status != http.StatusCreated {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusUnauthorized)
+			status, http.StatusCreated)
 	}
 }
 
@@ -92,7 +92,7 @@ func TestDeleteItem(t *testing.T) {
 
 	if status := response.Code; status != http.StatusNotFound {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
+			status, http.StatusNotFound)
 	}
 
 }

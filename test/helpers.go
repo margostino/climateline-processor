@@ -30,6 +30,12 @@ func mockItem(title string) domain.Item {
 	}
 }
 
+func mockJobRequest() (http.Request, error) {
+	request, err := http.NewRequest(http.MethodGet, "/job", nil)
+	setSecret(request)
+	return *request, err
+}
+
 func mockCachePostRequest() (http.Request, error) {
 	items := mockItems("mock.title")
 	json, err := json.Marshal(items)
