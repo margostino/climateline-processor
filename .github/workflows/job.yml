@@ -1,7 +1,7 @@
 name: Fetcher Job
 on:
   schedule:
-    - cron: '* 18 * * *'
+    - cron: '*/5 * * * *'
 jobs:
   cron:
     runs-on: ubuntu-latest
