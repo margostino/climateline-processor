@@ -110,7 +110,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 				params := strings.Split(sanitizedInput, " ")
 				property := params[0]
 				id := params[1]
-				value := common.NewString(sanitizedInput).
+				value := common.NewString(input).
 					TrimPrefix(fmt.Sprintf("%s %s", property, id)).
 					TrimPrefix(" ").
 					Value()
@@ -268,7 +268,8 @@ func fetchItems() bool {
 
 func generateArticle(item *domain.Item) string {
 	var icon string
-	switch item.Category {
+	category := strings.ToLower(item.Category)
+	switch category {
 	case "agreements":
 		icon = "handshake"
 	case "assessment":
