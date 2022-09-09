@@ -7,10 +7,12 @@ This repo implements the Job to fetch the news of the day related to Climate Cha
 The Job retrieve every news into the Admin Telegram Bot in order to approve, edit and push new article into [Climateline](https://climateline.vercel.app/) website.
 
 ### Architecture
-// TODO
+
+![](assets/architecture.png#100x)
 
 ### Features
 
 - [x] Cron job for fetching news
 - [x] Telegram bot for handling news workflow (upload, update) towards [Climateline](https://climateline.vercel.app/)
 - [x] Basic and short-time caching
+- [ ] Multi-Source News Fetcher
