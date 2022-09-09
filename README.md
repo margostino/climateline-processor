@@ -10,4 +10,7 @@ The Job retrieve every news into the Admin Telegram Bot in order to approve, edi
 // TODO
 
 ### Features
-// TODO
+
+- [x] Cron job for fetching news
+- [x] Telegram bot for handling news workflow (upload, update) towards [Climateline](https://climateline.vercel.app/)
+- [x] Basic and short-time caching
