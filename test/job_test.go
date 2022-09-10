@@ -24,23 +24,23 @@ func TestJobUnauthorized(t *testing.T) {
 	}
 }
 
-func TestRunJobNewItem(t *testing.T) {
-	request, err := mockJobRequest()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	response := httptest.NewRecorder()
-	handler := http.HandlerFunc(api.Job)
-
-	handler.ServeHTTP(response, &request)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if status := response.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-}
+//func TestRunJobNewItem(t *testing.T) {
+//	request, err := mockJobRequest()
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//
+//	response := httptest.NewRecorder()
+//	handler := http.HandlerFunc(api.Job)
+//
+//	handler.ServeHTTP(response, &request)
+//
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//
+//	if status := response.Code; status != http.StatusOK {
+//		t.Errorf("handler returned wrong status code: got %v want %v",
+//			status, http.StatusOK)
+//	}
+//}
