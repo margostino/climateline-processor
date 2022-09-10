@@ -14,7 +14,6 @@ import (
 type Request []domain.Item
 
 var cache = make(map[string]domain.Item)
-var baseCacheUrl = os.Getenv("CACHE_BASE_URL")
 
 func Cache(w http.ResponseWriter, r *http.Request) {
 
@@ -22,7 +21,6 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		if r.Method == "POST" {
-
 			defer r.Body.Close()
 			w.WriteHeader(http.StatusCreated)
 			var items []domain.Item
@@ -137,4 +135,9 @@ func Cache(w http.ResponseWriter, r *http.Request) {
 	}
 
 	return
+}
+
+// GetBaseCacheUrl Rather than a global and one-time assigment, this method is convenient for overriding on testing
+func GetBaseCacheUrl() string {
+	return os.Getenv("CACHE_BASE_URL")
 }

@@ -42,3 +42,47 @@ func TestBotUnauthorized(t *testing.T) {
 			status, http.StatusUnauthorized)
 	}
 }
+
+func TestInvalidInput(t *testing.T) {
+	message := &BotRequest{
+		UpdateId: 1,
+		Message: &BotMessage{
+			MessageId: 1,
+			Text:      "testing mock",
+			From: &BotFrom{
+				Id:        1,
+				FirstName: "mock.name",
+				Username:  "mock.username",
+			},
+			Chat: &BotChat{
+				Id: 1,
+			},
+		},
+	}
+
+	request, err := mockBotRequest(message)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	response := httptest.NewRecorder()
+	handler := http.HandlerFunc(api.Bot)
+
+	handler.ServeHTTP(response, &request)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if status := response.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	//
+	//var jobResponse domain.JobResponse
+	//err = json.NewDecoder(response.Body).Decode(&jobResponse)
+	//
+	//if jobResponse.Items != 1 {
+	//	t.Errorf("handler returned unexpected response size: got %v want %v", jobResponse.Items, 1)
+	//}
+}

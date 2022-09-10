@@ -27,7 +27,8 @@ func TestCacheUnauthorized(t *testing.T) {
 }
 
 func TestNewItem(t *testing.T) {
-	response, err := postCache()
+	items := mockItems("mock.title")
+	response, err := postCache(items)
 
 	if err != nil {
 		t.Fatal(err)
@@ -40,7 +41,8 @@ func TestNewItem(t *testing.T) {
 }
 
 func TestGetItem(t *testing.T) {
-	_, err := postCache()
+	items := mockItems("mock.title")
+	_, err := postCache(items)
 
 	if err != nil {
 		t.Fatal(err)
@@ -57,17 +59,18 @@ func TestGetItem(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	var items []domain.Item
-	err = json.NewDecoder(response.Body).Decode(&items)
+	var itemsResponse []domain.Item
+	err = json.NewDecoder(response.Body).Decode(&itemsResponse)
 
-	if len(items) != 1 {
-		t.Errorf("handler returned unexpected response size: got %v want %v", len(items), 1)
+	if len(itemsResponse) != 1 {
+		t.Errorf("handler returned unexpected response size: got %v want %v", len(itemsResponse), 1)
 	}
 
 }
 
 func TestDeleteItem(t *testing.T) {
-	_, err := postCache()
+	items := mockItems("mock.title")
+	_, err := postCache(items)
 
 	if err != nil {
 		t.Fatal(err)
@@ -98,7 +101,8 @@ func TestDeleteItem(t *testing.T) {
 }
 
 func TestPutItem(t *testing.T) {
-	_, err := postCache()
+	items := mockItems("mock.title")
+	_, err := postCache(items)
 
 	if err != nil {
 		t.Fatal(err)
@@ -121,15 +125,15 @@ func TestPutItem(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var items []domain.Item
-	err = json.NewDecoder(response.Body).Decode(&items)
+	var itemsResponse []domain.Item
+	err = json.NewDecoder(response.Body).Decode(&itemsResponse)
 
-	if len(items) != 1 {
-		t.Errorf("handler returned unexpected response size: got %v want %v", len(items), 1)
+	if len(itemsResponse) != 1 {
+		t.Errorf("handler returned unexpected response size: got %v want %v", len(itemsResponse), 1)
 	}
 
 	oldTitle := "mock.title"
-	newTitle := items[0].Title
+	newTitle := itemsResponse[0].Title
 
 	if newTitle == oldTitle {
 		t.Errorf("handler returned unexpected update title response: got %v want different than %v", newTitle, oldTitle)

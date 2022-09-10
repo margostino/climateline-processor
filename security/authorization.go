@@ -13,7 +13,13 @@ func IsAuthorized(r *http.Request) bool {
 	return requestSecret == fmt.Sprintf("Bearer %s", jobSecret)
 }
 
-func IsAdmin(username string, chatId int64, r *http.Request) bool {
+func IsAdmin(r *http.Request) bool {
+	botSecret := os.Getenv("TELEGRAM_BOT_SECRET")
+	requestSecret := r.Header.Get("X-Telegram-Bot-Api-Secret-Token")
+	return requestSecret == botSecret
+}
+
+func IsAdminData(username string, chatId int64, r *http.Request) bool {
 	return r.Host == os.Getenv("ALLOWED_HOST") &&
 		r.Header.Get("User-Agent") == os.Getenv("ALLOWED_USER_AGENT") &&
 		r.Method == os.Getenv("ALLOWED_METHOD") &&

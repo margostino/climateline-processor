@@ -46,7 +46,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, "update.Message.Text")
 
-	if security.IsAdmin(update.Message.From.UserName, update.Message.Chat.ID, r) {
+	if security.IsAdmin(r) {
 		defer r.Body.Close()
 		w.Header().Add("Content-Type", "application/json")
 
@@ -231,7 +231,7 @@ func extractIds(input string, prefix string) string {
 func getCachedItems(ids string) []domain.Item {
 	client := &http.Client{}
 	var items []domain.Item
-	url := fmt.Sprintf("%s?ids=%s", baseCacheUrl, ids)
+	url := fmt.Sprintf("%s?ids=%s", GetBaseCacheUrl(), ids)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
 	response, err := client.Do(request)
@@ -243,7 +243,7 @@ func getCachedItems(ids string) []domain.Item {
 
 func updateCachedItems(id string, edit *domain.Edit) bool {
 	client := &http.Client{}
-	url := fmt.Sprintf("%s?id=%s", baseCacheUrl, id)
+	url := fmt.Sprintf("%s?id=%s", GetBaseCacheUrl(), id)
 	json, err := json.Marshal(edit)
 
 	if !common.IsError(err, "when marshaling edit data") {
@@ -258,7 +258,7 @@ func updateCachedItems(id string, edit *domain.Edit) bool {
 
 func fetchItems() bool {
 	client := &http.Client{}
-	request, err := http.NewRequest(http.MethodGet, baseJobUrl, nil)
+	request, err := http.NewRequest(http.MethodGet, GetBaseJobUrl(), nil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
 	response, err := client.Do(request)
 	common.SilentCheck(err, "when triggering job")

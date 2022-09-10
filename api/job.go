@@ -15,13 +15,7 @@ import (
 	"strconv"
 )
 
-var bot = NewBot()
-
-type JobResponse struct {
-	Items int `json:"items"`
-}
-
-var baseJobUrl = os.Getenv("JOB_BASE_URL")
+var bot, _ = NewBot()
 
 func Job(w http.ResponseWriter, r *http.Request) {
 
@@ -45,7 +39,7 @@ func Job(w http.ResponseWriter, r *http.Request) {
 			items = append(items, item)
 		}
 
-		response := JobResponse{
+		response := domain.JobResponse{
 			Items: len(items),
 		}
 		jsonResp, err := json.Marshal(response)
@@ -65,12 +59,12 @@ func Job(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func NewBot() *tgbotapi.BotAPI {
+func NewBot() (*tgbotapi.BotAPI, error) {
 	client, error := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_BOT_TOKEN"))
-	common.Check(error, "when creating a new BotAPI instance")
 	//bot.Debug = true
-	log.Printf("Authorized on account %s\n", client.Self.UserName)
-	return client
+	common.SilentCheck(error, "when creating a new BotAPI instance")
+	//log.Printf("Authorized on account %s\n", client.Self.UserName)
+	return client, error
 }
 
 func Notify(item *domain.Item) {
@@ -104,11 +98,15 @@ func AskForUpdates() {
 }
 
 func Send(message string) {
-	userId, _ := strconv.ParseInt(os.Getenv("TELEGRAM_ADMIN_USER"), 10, 64)
-	msg := tgbotapi.NewMessage(userId, message)
-	msg.ReplyMarkup = nil
-	msg.ParseMode = "HTML"
-	bot.Send(msg)
+	if bot != nil {
+		userId, _ := strconv.ParseInt(os.Getenv("TELEGRAM_ADMIN_USER"), 10, 64)
+		msg := tgbotapi.NewMessage(userId, message)
+		msg.ReplyMarkup = nil
+		msg.ParseMode = "HTML"
+		bot.Send(msg)
+	} else {
+		log.Printf("Bot initialization failed")
+	}
 }
 
 func UpdateCache(items []*domain.Item) {
@@ -116,15 +114,21 @@ func UpdateCache(items []*domain.Item) {
 	json, err := json.Marshal(items)
 
 	if !common.IsError(err, "when updating cache") {
-		request, err := http.NewRequest(http.MethodPost, baseCacheUrl, bytes.NewBuffer(json))
+		request, err := http.NewRequest(http.MethodPost, GetBaseCacheUrl(), bytes.NewBuffer(json))
 		request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
 		request.Header.Set("Content-Type", "application/json")
 		response, err := client.Do(request)
 
-		if response.StatusCode != 201 {
+		common.SilentCheck(err, "in response of caching")
+
+		if err == nil && response.StatusCode != 201 {
 			log.Printf("Updating cache was not successful. Status: %d\n", response.StatusCode)
 		}
-		common.SilentCheck(err, "in response of caching")
 	}
 
+}
+
+// GetBaseJobUrl Rather than a global and one-time assigment, this method is convenient for overriding on testing
+func GetBaseJobUrl() string {
+	return os.Getenv("JOB_BASE_URL")
 }

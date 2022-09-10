@@ -17,3 +17,7 @@ type Edit struct {
 	Location   string `json:"location"`
 	Category   string `json:"category"`
 }
+
+type JobResponse struct {
+	Items int `json:"items"`
+}
