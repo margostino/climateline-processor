@@ -1,6 +1,9 @@
 package common
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type String struct {
 	value string
@@ -23,6 +26,22 @@ func (s *String) ToLower() *String {
 
 func (s *String) TrimPrefix(prefix string) *String {
 	s.value = strings.TrimPrefix(s.value, prefix)
+	return s
+}
+
+func (s *String) TrimIndex(index int) *String {
+	var prefix string
+
+	for i := 0; i < index; i++ {
+		if prefix == "" {
+			prefix += strings.Split(s.value, " ")[i]
+		} else {
+			prefix += fmt.Sprintf(" %s", strings.Split(s.value, " ")[i])
+		}
+	}
+
+	s.value = strings.TrimPrefix(s.value, prefix)
+	s.value = strings.TrimPrefix(s.value, " ")
 	return s
 }
 

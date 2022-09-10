@@ -111,8 +111,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 				property := params[0]
 				id := params[1]
 				value := common.NewString(input).
-					TrimPrefix(fmt.Sprintf("%s %s", property, id)).
-					TrimPrefix(" ").
+					TrimIndex(2).
 					Value()
 
 				if property == "category" {
