@@ -1,6 +1,6 @@
 # climateline-processor
 
-[![Build & Test](https://github.com/margostino/climateline-processor/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/main.yml)
+[![Build & Test](https://github.com/margostino/climateline-processor/actions/workflows/main.yml/badge.svg)](https://github.com/margostino/climateline-processor/actions/workflows/main.yml)
 [![fetcher-job](https://github.com/margostino/climateline-processor/actions/workflows/job.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/job.yml)
 
 This repo implements the Job to fetch the news of the day related to Climate Change.  
