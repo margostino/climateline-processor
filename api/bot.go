@@ -25,10 +25,10 @@ type Response struct {
 	Method string `json:"method"`
 }
 
-var githubClient = getGithubClient()
+var githubClient *github.Client
 
 func Bot(w http.ResponseWriter, r *http.Request) {
-
+	githubClient = getGithubClient()
 	log.Printf("Method: %s "+
 		"Proto: %s "+
 		"User-Agent: %s, "+

@@ -15,10 +15,10 @@ import (
 	"strconv"
 )
 
-var bot, _ = NewBot()
+var bot *tgbotapi.BotAPI
 
 func Job(w http.ResponseWriter, r *http.Request) {
-
+	bot, _ = NewBot()
 	if security.IsAuthorized(r) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
