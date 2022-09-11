@@ -7,11 +7,12 @@ import (
 	"github.com/margostino/climateline-processor/domain"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
 func TestBotUnauthorized(t *testing.T) {
-	request := &BotRequest{
+	message := &BotRequest{
 		UpdateId: 1,
 		Message: &BotMessage{
 			MessageId: 1,
@@ -26,19 +27,21 @@ func TestBotUnauthorized(t *testing.T) {
 			},
 		},
 	}
-	json, err := json.Marshal(request)
+
+	os.Setenv("TELEGRAM_BOT_SECRET", "invalid-secret")
+	json, err := json.Marshal(message)
 	body := bytes.NewBuffer(json)
-	req, err := http.NewRequest(http.MethodPost, "/bot", body)
+	request, err := http.NewRequest(http.MethodPost, "/bot", body)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	rr := httptest.NewRecorder()
+	response := httptest.NewRecorder()
 	handler := http.HandlerFunc(api.Bot)
 
-	handler.ServeHTTP(rr, req)
+	handler.ServeHTTP(response, request)
 
-	if status := rr.Code; status != http.StatusUnauthorized {
+	if status := response.Code; status != http.StatusUnauthorized {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusUnauthorized)
 	}
