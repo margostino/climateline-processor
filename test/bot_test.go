@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/margostino/climateline-processor/api"
+	"github.com/margostino/climateline-processor/domain"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -78,11 +79,15 @@ func TestInvalidInput(t *testing.T) {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
-	//
-	//var jobResponse domain.JobResponse
-	//err = json.NewDecoder(response.Body).Decode(&jobResponse)
-	//
-	//if jobResponse.Items != 1 {
-	//	t.Errorf("handler returned unexpected response size: got %v want %v", jobResponse.Items, 1)
-	//}
+
+	var botResponse domain.BotResponse
+	err = json.NewDecoder(response.Body).Decode(&botResponse)
+
+	if botResponse.ChatId != 1 {
+		t.Errorf("handler returned unexpected chat ID: got %v want %v", botResponse.ChatId, 1)
+	}
+
+	if botResponse.Text != "Input is not valid" {
+		t.Errorf("handler returned unexpected chat ID: got %v want %v", botResponse.Text, "Input is not valid")
+	}
 }

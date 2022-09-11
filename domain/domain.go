@@ -21,3 +21,9 @@ type Edit struct {
 type JobResponse struct {
 	Items int `json:"items"`
 }
+
+type BotResponse struct {
+	Text   string `json:"text"`
+	ChatId int    `json:"chat_id"`
+	Method string `json:"method"`
+}
