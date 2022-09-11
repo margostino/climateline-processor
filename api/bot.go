@@ -52,7 +52,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 
 		input := update.Message.Text
 		if isValidInput(input) {
-			if shouldPush(input) {
+			if shouldDo("push", input) {
 				ids := extractIds(input, "push ")
 				items := getCachedItems(ids)
 
@@ -78,7 +78,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					reply = "⚠️ There are not items to upload"
 				}
 
-			} else if shouldFetch(input) {
+			} else if shouldDo("fetch", input) {
 
 				if fetchItems() {
 					reply = "✅ Completed successfully"
@@ -86,7 +86,13 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					reply = "🔴 Fetcher failed"
 				}
 
-			} else if shouldShow(input) {
+			} else if shouldDo("clean", input) {
+				if cleanCache() {
+					reply = "🧹 cache deleted"
+				} else {
+					reply = "🔴 cache deletion failed!"
+				}
+			} else if shouldDo("show", input) {
 				var id string
 				if input == "/show" || input == "show" || input == "show all" || input == "show *" {
 					id = "*"
@@ -104,7 +110,11 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 					reply = fmt.Sprintf("🤷‍ There is not item for ID %s", id)
 				}
 
-			} else if shouldEditProperty(input) {
+			} else if shouldDo("category", input) ||
+				shouldDo("title", input) ||
+				shouldDo("source", input) ||
+				shouldDo("location", input) {
+
 				var edit *domain.Edit
 				sanitizedInput := sanitizeInput(input)
 				params := strings.Split(sanitizedInput, " ")
@@ -136,7 +146,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 				} else {
 					reply = "🔴 article update failed!"
 				}
-			} else if shouldEdit(input) {
+			} else if shouldDo("edit", input) {
 				instructions := strings.Split(input, "\n")
 				edit := &domain.Edit{
 					Title:      instructions[1],
@@ -191,32 +201,9 @@ func isValidInput(input string) bool {
 	return match
 }
 
-func shouldPush(input string) bool {
+func shouldDo(action string, input string) bool {
 	sanitizedInput := sanitizeInput(input)
-	return strings.Contains(sanitizedInput, "push")
-}
-
-func shouldEditProperty(input string) bool {
-	sanitizedInput := sanitizeInput(input)
-	return strings.Contains(sanitizedInput, "category") ||
-		strings.Contains(sanitizedInput, "title") ||
-		strings.Contains(sanitizedInput, "source") ||
-		strings.Contains(sanitizedInput, "location")
-}
-
-func shouldFetch(input string) bool {
-	sanitizedInput := sanitizeInput(input)
-	return strings.Contains(sanitizedInput, "fetch")
-}
-
-func shouldEdit(input string) bool {
-	sanitizedInput := sanitizeInput(input)
-	return strings.Contains(sanitizedInput, "edit")
-}
-
-func shouldShow(input string) bool {
-	sanitizedInput := sanitizeInput(input)
-	return strings.Contains(sanitizedInput, "show")
+	return strings.Contains(sanitizedInput, action)
 }
 
 func extractIds(input string, prefix string) string {
@@ -254,6 +241,15 @@ func updateCachedItems(id string, edit *domain.Edit) bool {
 		return response.StatusCode == 204
 	}
 	return false
+}
+
+func cleanCache() bool {
+	client := &http.Client{}
+	request, err := http.NewRequest(http.MethodDelete, GetBaseCacheUrl(), nil)
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
+	response, err := client.Do(request)
+	common.SilentCheck(err, "when cleaning up the cache")
+	return response.StatusCode == 200
 }
 
 func fetchItems() bool {
