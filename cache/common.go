@@ -1,11 +1,10 @@
 package cache
 
 import (
-	"github.com/margostino/climateline-processor/domain"
-	"net/http"
+	"os"
 )
 
-func Delete(writer *http.ResponseWriter, db *map[string]domain.Item) {
-	(*writer).WriteHeader(http.StatusOK)
-	*db = make(map[string]domain.Item)
+// GetBaseCacheUrl Rather than a global and one-time assigment, this method is convenient for overriding on testing
+func GetBaseCacheUrl() string {
+	return os.Getenv("CACHE_BASE_URL")
 }

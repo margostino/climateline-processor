@@ -1,10 +1,9 @@
 package bot
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/margostino/climateline-processor/api"
+	"github.com/margostino/climateline-processor/cache"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/domain"
 	"net/http"
@@ -12,87 +11,55 @@ import (
 	"strings"
 )
 
-func Update(input string) string {
-	var reply string
+func Show(input string) string {
 	var id string
-	var update *domain.Update
+	var reply string
 
-	sanitizedInput := SanitizeInput(input)
-
-	if strings.Contains(sanitizedInput, "edit") {
-		instructions := strings.Split(input, "\n")
-		update = &domain.Update{
-			Title:      instructions[1],
-			SourceName: instructions[2],
-			Location:   instructions[3],
-			Category:   instructions[4],
-		}
-		id = extractIds(instructions[0], "edit ")
+	if input == "/show" || input == "show" || input == "show all" || input == "show *" {
+		id = "*"
 	} else {
-		params := strings.Split(sanitizedInput, " ")
-		property := params[0]
-		id = params[1]
-		value := common.NewString(input).
-			TrimIndex(2).
-			Value()
-
-		if property == "category" {
-			update = &domain.Update{
-				Category: value,
-			}
-		} else if property == "location" {
-			update = &domain.Update{
-				Location: value,
-			}
-		} else if property == "title" {
-			update = &domain.Update{
-				Title: value,
-			}
-		} else {
-			update = &domain.Update{
-				SourceName: value,
-			}
-		}
+		id = extractIds(input, "show ")
 	}
 
-	if updateCachedItems(id, update) {
-		reply = "✅ article updated"
+	items := getCachedItems(id)
+
+	if len(items) > 0 {
+		reply = buildShowReply(items[0])
+	} else if id == "*" || id == "" || id == " " || id == "show" {
+		reply = "Cache is empty"
 	} else {
-		reply = "🔴 article update failed!"
+		reply = fmt.Sprintf("🤷‍ There is not item for ID %s", id)
 	}
 
 	return reply
 }
 
-func ShouldUpdate(input string) bool {
+func ShouldShow(input string) bool {
 	sanitizedInput := SanitizeInput(input)
-	return strings.Contains(sanitizedInput, "category") ||
-		strings.Contains(sanitizedInput, "title") ||
-		strings.Contains(sanitizedInput, "source") ||
-		strings.Contains(sanitizedInput, "location") ||
-		strings.Contains(sanitizedInput, "edit")
+	return strings.Contains(sanitizedInput, "show")
 }
 
-func updateCachedItems(id string, edit *domain.Update) bool {
+func getCachedItems(ids string) []domain.Item {
 	client := &http.Client{}
-	url := fmt.Sprintf("%s?id=%s", api.GetBaseCacheUrl(), id)
-	json, err := json.Marshal(edit)
-
-	if !common.IsError(err, "when marshaling edit data") {
-		request, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(json))
-		request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
-		response, err := client.Do(request)
-		common.SilentCheck(err, "when updating cached item")
-		return response.StatusCode == 204
-	}
-	return false
+	var items []domain.Item
+	url := fmt.Sprintf("%s?ids=%s", cache.GetBaseCacheUrl(), ids)
+	request, err := http.NewRequest(http.MethodGet, url, nil)
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
+	response, err := client.Do(request)
+	common.SilentCheck(err, "when getting cached item")
+	err = json.NewDecoder(response.Body).Decode(&items)
+	common.SilentCheck(err, "when decoding response from cache")
+	return items
 }
 
-func extractIds(input string, prefix string) string {
-	return common.NewString(input).
-		ToLower().
-		TrimPrefix(prefix).
-		Split(" ").
-		Join(",").
-		Value()
+func buildShowReply(item domain.Item) string {
+	return fmt.Sprintf("🔑 ID: %s\n"+
+		"🗓 Date: %s\n"+
+		"💡 Title: %s\n"+
+		"🔗 Link: <a href='%s'>Here</a>\n"+
+		"📖 Content: %s\n"+
+		"🗳 Source: %s\n"+
+		"📍 Location: %s\n"+
+		"🏷 Category: %s\n",
+		item.Id, item.Timestamp, item.Title, item.Link, item.Content, item.SourceName, item.Location, item.Category)
 }

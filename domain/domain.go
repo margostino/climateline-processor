@@ -11,7 +11,7 @@ type Item struct {
 	Category   string `json:"category"`
 }
 
-type Edit struct {
+type Update struct {
 	Title      string `json:"title"`
 	SourceName string `json:"source_name"`
 	Location   string `json:"location"`

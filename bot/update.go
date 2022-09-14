@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/margostino/climateline-processor/api"
+	"github.com/margostino/climateline-processor/cache"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/domain"
 	"net/http"
@@ -12,35 +12,50 @@ import (
 	"strings"
 )
 
-func Edit(input string) string {
+func Update(input string) string {
 	var reply string
-	var edit *domain.Edit
-	sanitizedInput := SanitizeInput(input)
-	params := strings.Split(sanitizedInput, " ")
-	property := params[0]
-	id := params[1]
-	value := common.NewString(input).
-		TrimIndex(2).
-		Value()
+	var id string
+	var update *domain.Update
 
-	if property == "category" {
-		edit = &domain.Edit{
-			Category: value,
+	sanitizedInput := SanitizeInput(input)
+
+	if strings.Contains(sanitizedInput, "edit") {
+		instructions := strings.Split(input, "\n")
+		update = &domain.Update{
+			Title:      instructions[1],
+			SourceName: instructions[2],
+			Location:   instructions[3],
+			Category:   instructions[4],
 		}
-	} else if property == "location" {
-		edit = &domain.Edit{
-			Location: value,
-		}
-	} else if property == "title" {
-		edit = &domain.Edit{
-			Title: value,
-		}
+		id = extractIds(instructions[0], "edit ")
 	} else {
-		edit = &domain.Edit{
-			SourceName: value,
+		params := strings.Split(sanitizedInput, " ")
+		property := params[0]
+		id = params[1]
+		value := common.NewString(input).
+			TrimIndex(2).
+			Value()
+
+		if property == "category" {
+			update = &domain.Update{
+				Category: value,
+			}
+		} else if property == "location" {
+			update = &domain.Update{
+				Location: value,
+			}
+		} else if property == "title" {
+			update = &domain.Update{
+				Title: value,
+			}
+		} else {
+			update = &domain.Update{
+				SourceName: value,
+			}
 		}
 	}
-	if updateCachedItems(id, edit) {
+
+	if updateCachedItems(id, update) {
 		reply = "✅ article updated"
 	} else {
 		reply = "🔴 article update failed!"
@@ -49,9 +64,18 @@ func Edit(input string) string {
 	return reply
 }
 
-func updateCachedItems(id string, edit *domain.Edit) bool {
+func ShouldUpdate(input string) bool {
+	sanitizedInput := SanitizeInput(input)
+	return strings.Contains(sanitizedInput, "category") ||
+		strings.Contains(sanitizedInput, "title") ||
+		strings.Contains(sanitizedInput, "source") ||
+		strings.Contains(sanitizedInput, "location") ||
+		strings.Contains(sanitizedInput, "edit")
+}
+
+func updateCachedItems(id string, edit *domain.Update) bool {
 	client := &http.Client{}
-	url := fmt.Sprintf("%s?id=%s", api.GetBaseCacheUrl(), id)
+	url := fmt.Sprintf("%s?id=%s", cache.GetBaseCacheUrl(), id)
 	json, err := json.Marshal(edit)
 
 	if !common.IsError(err, "when marshaling edit data") {
