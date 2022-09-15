@@ -25,6 +25,7 @@ func Execute(writer *http.ResponseWriter) {
 
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
+
 	for id, entry := range feed.Items {
 		item := &domain.Item{
 			Id:        strconv.Itoa(id + 1),
