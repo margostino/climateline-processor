@@ -22,7 +22,7 @@ func Reply(input string) string {
 		case EDIT:
 			reply = Update(input)
 		case FETCH:
-			reply = Fetch(input)
+			reply = Fetch()
 		case SHOW:
 			reply = Show(input)
 		case CLEAN:

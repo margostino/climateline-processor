@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Fetch(input string) string {
+func Fetch() string {
 	var reply string
 
 	if fetchItems() {

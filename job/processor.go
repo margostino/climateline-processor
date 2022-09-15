@@ -26,21 +26,26 @@ func Execute(writer *http.ResponseWriter) {
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
 
-	for id, entry := range feed.Items {
-		item := &domain.Item{
-			Id:        strconv.Itoa(id + 1),
-			Timestamp: entry.Updated,
-			Title:     entry.Title,
-			Link:      entry.Link,
-			Content:   entry.Content,
+	if feed != nil {
+		for id, entry := range feed.Items {
+			item := &domain.Item{
+				Id:        strconv.Itoa(id + 1),
+				Timestamp: entry.Updated,
+				Title:     entry.Title,
+				Link:      entry.Link,
+				Content:   entry.Content,
+			}
+			notify(item)
+			items = append(items, item)
 		}
-		notify(item)
-		items = append(items, item)
+	} else {
+		log.Printf("There are no feeds")
 	}
 
 	response := domain.JobResponse{
 		Items: len(items),
 	}
+
 	jsonResp, err := json.Marshal(response)
 	if err != nil {
 		fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
