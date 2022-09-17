@@ -32,6 +32,7 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		log.Printf("ERROR: " + err.Error())
 	}
 
+	log.Printf("Files: " + string(len(files)))
 	for _, file := range files {
 		log.Println(file.Name(), file.IsDir())
 	}
