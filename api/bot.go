@@ -27,9 +27,9 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("PATH: " + path)
 
-	files, err := ioutil.ReadDir("/var/task")
+	files, err := ioutil.ReadDir(".")
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("ERROR: " + err.Error())
 	}
 
 	for _, file := range files {
