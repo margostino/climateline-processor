@@ -26,6 +26,16 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	log.Printf("PATH: " + path)
+
+	files, err := ioutil.ReadDir("/var/task")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		log.Println(file.Name(), file.IsDir())
+	}
+
 	contents, err := os.ReadFile("./config/config.txt")
 	if err != nil {
 		fmt.Println("File reading error", err)
