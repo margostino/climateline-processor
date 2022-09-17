@@ -21,7 +21,7 @@ var botApi *tgbotapi.BotAPI
 func Bot(w http.ResponseWriter, r *http.Request) {
 	var reply string
 
-	contents, err := os.ReadFile("config.txt")
+	contents, err := os.ReadFile("./config/config.txt")
 	if err != nil {
 		fmt.Println("File reading error", err)
 		reply = "Error: " + err.Error()
