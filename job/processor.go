@@ -2,6 +2,7 @@ package job
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -9,6 +10,8 @@ import (
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/domain"
 	"github.com/mmcdole/gofeed"
+	"google.golang.org/api/option"
+	"google.golang.org/api/sheets/v4"
 	"log"
 	"net/http"
 	"os"
@@ -21,40 +24,70 @@ func Execute(writer *http.ResponseWriter) {
 	var items = make([]*domain.Item, 0)
 	botApi, _ = newBot()
 
-	(*writer).WriteHeader(http.StatusOK)
+	ctx := context.Background()
+	sheets, err := sheets.NewService(ctx, option.WithAPIKey(os.Getenv("GSHEET_API_KEY")))
 
-	fp := gofeed.NewParser()
-	feed, _ := fp.ParseURL(os.Getenv("FEED_URL"))
-
-	if feed != nil {
-		for id, entry := range feed.Items {
-			item := &domain.Item{
-				Id:        strconv.Itoa(id + 1),
-				Timestamp: entry.Updated,
-				Title:     entry.Title,
-				Link:      entry.Link,
-				Content:   entry.Content,
+	if !common.IsError(err, "when creating new Google API Service") {
+		(*writer).WriteHeader(http.StatusOK)
+		feeds := make([]string, 0)
+		spreadsheetId := os.Getenv("SPREADSHEET_ID")
+		readRange := os.Getenv("SPREADSHEET_RANGE")
+		resp, err := sheets.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
+		if !common.IsError(err, "unable to retrieve data from sheet") {
+			if len(resp.Values) == 0 {
+				(*writer).WriteHeader(http.StatusNotFound)
+			} else {
+				for _, row := range resp.Values {
+					feeds = append(feeds, row[0].(string))
+				}
 			}
-			notify(item)
-			items = append(items, item)
+
+			for _, feedUrl := range feeds {
+				fp := gofeed.NewParser()
+				feed, _ := fp.ParseURL(feedUrl)
+
+				if feed != nil {
+					for id, entry := range feed.Items {
+						item := &domain.Item{
+							Id:        strconv.Itoa(id + 1),
+							Timestamp: entry.Updated,
+							Title:     entry.Title,
+							Link:      entry.Link,
+							Content:   entry.Content,
+						}
+						items = append(items, item)
+					}
+				} else {
+					log.Printf("There are no feeds")
+				}
+
+			}
+
+			for _, item := range items {
+				notify(item)
+			}
+
+			response := domain.JobResponse{
+				Items: len(items),
+			}
+
+			jsonResp, err := json.Marshal(response)
+			if err != nil {
+				fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
+			} else {
+				(*writer).Write(jsonResp)
+			}
+
+			updateCache(items)
+			askForUpdates()
+
+		} else {
+			(*writer).WriteHeader(http.StatusBadRequest)
 		}
+
 	} else {
-		log.Printf("There are no feeds")
+		(*writer).WriteHeader(http.StatusUnauthorized)
 	}
-
-	response := domain.JobResponse{
-		Items: len(items),
-	}
-
-	jsonResp, err := json.Marshal(response)
-	if err != nil {
-		fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
-	} else {
-		(*writer).Write(jsonResp)
-	}
-
-	updateCache(items)
-	askForUpdates()
 
 }
 
