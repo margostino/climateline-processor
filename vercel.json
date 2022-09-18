@@ -5,8 +5,7 @@
   "functions": {
     "api/bot.go": {
       "memory": 1024,
-      "maxDuration": 10,
-      "includeFiles": "config/config.txt"
+      "maxDuration": 10
     },
     "api/job.go": {
       "memory": 1024,
