@@ -6,9 +6,10 @@ import (
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 	"os"
+	"strconv"
 )
 
-func GetUrls() []string {
+func GetUrls(category string) []string {
 	urls := make([]string, 0)
 
 	ctx := context.Background()
@@ -21,7 +22,14 @@ func GetUrls() []string {
 
 		if !common.IsError(err, "unable to retrieve data from sheet") && len(resp.Values) > 0 {
 			for _, row := range resp.Values {
-				urls = append(urls, row[0].(string))
+				isEnabled, err := strconv.ParseBool(row[2].(string))
+				common.SilentCheck(err, "when fetching feed urls configuration")
+				matchCategory := category != "*" && category == row[1]
+
+				if matchCategory || (isEnabled && category == "*") {
+					urls = append(urls, row[0].(string))
+				}
+
 			}
 		}
 	}

@@ -14,18 +14,21 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 var botApi *tgbotapi.BotAPI
 var urls []string
 
-func Execute(writer *http.ResponseWriter) {
+func Execute(request *http.Request, writer *http.ResponseWriter) {
 	var items = make([]*domain.Item, 0)
 	botApi, _ = newBot()
 
-	if len(urls) == 0 {
-		urls = config.GetUrls()
+	category := strings.ToLower(request.URL.Query().Get("category"))
+	if category == "" {
+		category = "*"
 	}
+	urls = config.GetUrls(category)
 
 	for _, feedUrl := range urls {
 		fp := gofeed.NewParser()

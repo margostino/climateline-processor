@@ -8,7 +8,6 @@ import (
 	"github.com/margostino/climateline-processor/domain"
 	"net/http"
 	"os"
-	"strings"
 )
 
 func Show(input string) string {
@@ -32,11 +31,6 @@ func Show(input string) string {
 	}
 
 	return reply
-}
-
-func ShouldShow(input string) bool {
-	sanitizedInput := SanitizeInput(input)
-	return strings.Contains(sanitizedInput, "show")
 }
 
 func getCachedItems(ids string) []domain.Item {

@@ -45,11 +45,6 @@ func Push(input string, githubClient *github.Client) string {
 	return reply
 }
 
-func ShouldPush(input string) bool {
-	sanitizedInput := SanitizeInput(input)
-	return strings.Contains(sanitizedInput, "push")
-}
-
 func generateArticle(item *domain.Item) string {
 	var icon string
 	category := strings.ToLower(item.Category)

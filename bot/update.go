@@ -64,15 +64,6 @@ func Update(input string) string {
 	return reply
 }
 
-func ShouldUpdate(input string) bool {
-	sanitizedInput := SanitizeInput(input)
-	return strings.Contains(sanitizedInput, "category") ||
-		strings.Contains(sanitizedInput, "title") ||
-		strings.Contains(sanitizedInput, "source") ||
-		strings.Contains(sanitizedInput, "location") ||
-		strings.Contains(sanitizedInput, "edit")
-}
-
 func updateCachedItems(id string, edit *domain.Update) bool {
 	client := &http.Client{}
 	url := fmt.Sprintf("%s?id=%s", cache.GetBaseCacheUrl(), id)

@@ -20,13 +20,13 @@ func Reply(input string) string {
 	if len(commands) > 0 {
 		switch commands[0] {
 		case PUSH:
-			reply = Push(input, githubClient)
+			reply = Push(sanitizedInput, githubClient)
 		case EDIT:
-			reply = Update(input)
+			reply = Update(sanitizedInput)
 		case FETCH:
-			reply = Fetch()
+			reply = Fetch(sanitizedInput)
 		case SHOW:
-			reply = Show(input)
+			reply = Show(sanitizedInput)
 		case CLEAN:
 			reply = Clean()
 		default:
