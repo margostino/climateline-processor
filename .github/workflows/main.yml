@@ -20,4 +20,7 @@ jobs:
       - name: Test
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          GSHEET_API_KEY: ${{ secrets.GSHEET_API_KEY }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+          SPREADSHEET_RANGE: ${{ secrets.SPREADSHEET_RANGE }}
         run: go test -v ./...
