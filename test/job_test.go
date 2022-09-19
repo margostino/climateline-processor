@@ -5,6 +5,7 @@ import (
 	"github.com/margostino/climateline-processor/api"
 	"github.com/margostino/climateline-processor/domain"
 	"github.com/stretchr/testify/require"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -36,11 +37,16 @@ func TestRunJobNewItem(t *testing.T) {
 
 	feedContent := mockRssFeed()
 
-	feedServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	MOCK_FEED_URL := "127.0.0.1:52521"
+	feedServer := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, err := w.Write([]byte(feedContent))
 		require.NoError(t, err)
 	}))
+	l, _ := net.Listen("tcp", MOCK_FEED_URL)
+	feedServer.Listener = l
+	feedServer.Start()
+	defer feedServer.Close()
 
 	cacheServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
@@ -51,6 +57,8 @@ func TestRunJobNewItem(t *testing.T) {
 			t.Errorf("unexpected caching items size: got %v want %v", len(items), 1)
 		}
 	}))
+
+	defer cacheServer.Close()
 
 	os.Setenv("TELEGRAM_BOT_TOKEN", "dummy")
 	os.Setenv("FEED_URL", feedServer.URL)

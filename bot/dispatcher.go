@@ -12,7 +12,9 @@ const (
 
 func Reply(input string) string {
 	var reply string
-	sanitizedInput := SanitizeInput(input)
+	var command string
+	command = strings.ReplaceAll(input, "/", command)
+	sanitizedInput := SanitizeInput(command)
 	commands := strings.Split(sanitizedInput, " ")
 
 	if len(commands) > 0 {

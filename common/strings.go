@@ -24,6 +24,11 @@ func (s *String) ToLower() *String {
 	return s
 }
 
+func (s *String) Replace() *String {
+	s.value = strings.ReplaceAll(s.value, "/", s.value)
+	return s
+}
+
 func (s *String) TrimPrefix(prefix string) *String {
 	s.value = strings.TrimPrefix(s.value, prefix)
 	return s
