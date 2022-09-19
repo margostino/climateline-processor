@@ -36,7 +36,8 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error updating →", err)
 	}
 
-	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, "update.Message.Text")
+	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
+	log.Printf("Reply to %s", update.Message.ReplyToMessage.Text)
 
 	if security.IsAdmin(r) {
 		w.Header().Add("Content-Type", "application/json")
