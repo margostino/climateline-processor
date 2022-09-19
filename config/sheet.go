@@ -22,6 +22,7 @@ func GetUrls(category string) []string {
 
 		if !common.IsError(err, "unable to retrieve data from sheet") && len(resp.Values) > 0 {
 			for _, row := range resp.Values {
+				println("sarlanga: %s", row[0].(string))
 				isEnabled, err := strconv.ParseBool(row[2].(string))
 				common.SilentCheck(err, "when fetching feed urls configuration")
 				matchCategory := category != "*" && category == row[1]
