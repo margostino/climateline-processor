@@ -36,14 +36,12 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error updating →", err)
 	}
 
-	log.Printf("[%s@%d] %s", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text)
-	log.Printf("Reply to %s", update.Message.ReplyToMessage.Text)
+	log.Printf("[%s@%d] %s - reply: %t", update.Message.From.UserName, update.Message.Chat.ID, update.Message.Text, update.Message.ReplyToMessage != nil)
 
 	if security.IsAdmin(r) {
 		w.Header().Add("Content-Type", "application/json")
-		input := update.Message.Text
-		if bot.IsValidInput(input) {
-			reply = bot.Reply(input)
+		if bot.IsValidInput(update.Message) {
+			reply = bot.Reply(update.Message)
 		} else {
 			reply = "Input is not valid"
 			log.Println(reply)

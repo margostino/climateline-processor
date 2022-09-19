@@ -76,12 +76,16 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 
 func notify(item *domain.Item) {
 	message := fmt.Sprintf("🔔 New article! \n"+
-		"🔑 ID: %s\n"+
-		"🗓 Date: %s\n"+
-		"💡 Title: %s\n"+
-		"🔗 Link: <a href='%s'>Here</a>\n"+
-		"📖 Content: %s\n",
-		item.Id, item.Timestamp, item.Title, item.Link, item.Content)
+		"%s %s\n"+
+		"%s %s\n"+
+		"%s %s\n"+
+		"%s <a href='%s'>Here</a>\n"+
+		"%s Content: %s\n",
+		domain.ID_PREFIX, item.Id,
+		domain.TITLE_PREFIX, item.Timestamp,
+		domain.TITLE_PREFIX, item.Title,
+		domain.LINK_PREFIX, item.Link,
+		domain.CONTENT_PREFIX, item.Content)
 	send(message)
 }
 

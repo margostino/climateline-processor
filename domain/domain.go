@@ -1,5 +1,13 @@
 package domain
 
+const (
+	ID_PREFIX      = "🔑 ID:"
+	DATE_PREFIX    = "🗓 Date:"
+	TITLE_PREFIX   = "💡 Title:"
+	LINK_PREFIX    = "🔗 Link:"
+	CONTENT_PREFIX = "📖 Content:"
+)
+
 type Item struct {
 	Id         string `json:"id"`
 	Timestamp  string `json:"timestamp"`

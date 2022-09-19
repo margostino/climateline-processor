@@ -13,6 +13,50 @@ import (
 
 var githubClient *github.Client
 
+func sanitizeReply(input string, prefix string) string {
+	return common.NewString(input).
+		TrimPrefix(prefix).
+		Trim(" ").
+		Value()
+}
+func PushItem(input string, githubClient *github.Client) string {
+	var reply string
+
+	lines := strings.Split(input, "\n")
+
+	if len(lines) == 6 {
+		id := sanitizeReply(lines[1], domain.ID_PREFIX)
+		timestamp := sanitizeReply(lines[2], domain.DATE_PREFIX)
+		title := sanitizeReply(lines[3], domain.TITLE_PREFIX)
+		link := sanitizeReply(lines[4], domain.LINK_PREFIX)
+		content := sanitizeReply(lines[5], domain.CONTENT_PREFIX)
+
+		print(id)
+		print(timestamp)
+		print(title)
+		print(link)
+		print(content)
+
+	}
+	//content := generateArticle(&item)
+	//message := "new article from workflow"
+	//options := &github.RepositoryContentFileOptions{
+	//	Content: []byte(content),
+	//	Message: &message,
+	//}
+	//path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(item.Title), " ", "-"))
+	//_, response, err := githubClient.Repositories.CreateFile(context.Background(), "margostino", "climateline", path, options)
+	//common.SilentCheck(err, "when creating new article on repository")
+	//
+	//if response.StatusCode == 201 {
+	//	reply = "✅ New article uploaded"
+	//} else {
+	//	reply = fmt.Sprintf("🔴 Upload failed with status %s", response.Status)
+	//}
+
+	return reply
+}
+
 func Push(input string, githubClient *github.Client) string {
 	var reply string
 	githubClient = getGithubClient()
