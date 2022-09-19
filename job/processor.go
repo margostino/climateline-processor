@@ -21,6 +21,7 @@ var botApi *tgbotapi.BotAPI
 var urls []string
 
 func Execute(request *http.Request, writer *http.ResponseWriter) {
+	var id = 0
 	var items = make([]*domain.Item, 0)
 	botApi, _ = newBot()
 
@@ -36,8 +37,9 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 
 		if feed != nil {
 			for _, entry := range feed.Items {
+				id += 1
 				item := &domain.Item{
-					Id:        strconv.Itoa(len(items) + 1),
+					Id:        strconv.Itoa(id),
 					Timestamp: entry.Updated,
 					Title:     entry.Title,
 					Link:      entry.Link,

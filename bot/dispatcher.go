@@ -1,6 +1,9 @@
 package bot
 
-import "strings"
+import (
+	"github.com/margostino/climateline-processor/common"
+	"strings"
+)
 
 const (
 	PUSH  = "push"
@@ -12,8 +15,10 @@ const (
 
 func Reply(input string) string {
 	var reply string
-	var command string
-	command = strings.ReplaceAll(input, "/", command)
+	command := common.NewString(input).
+		ReplaceAll("/", "").
+		ReplaceAll("_", " ").
+		Value()
 	sanitizedInput := SanitizeInput(command)
 	commands := strings.Split(sanitizedInput, " ")
 

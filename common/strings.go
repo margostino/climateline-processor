@@ -24,8 +24,8 @@ func (s *String) ToLower() *String {
 	return s
 }
 
-func (s *String) Replace() *String {
-	s.value = strings.ReplaceAll(s.value, "/", s.value)
+func (s *String) ReplaceAll(old string, new string) *String {
+	s.value = strings.ReplaceAll(s.value, old, new)
 	return s
 }
 
