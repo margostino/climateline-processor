@@ -28,18 +28,3 @@ func GetUrls() []string {
 
 	return urls
 }
-
-func Mock() {
-	ctx := context.Background()
-	api, err := sheets.NewService(ctx, option.WithAPIKey(os.Getenv("GSHEET_API_KEY")))
-
-	if !common.IsError(err, "when creating new Google API Service") {
-		var vr sheets.ValueRange
-		spreadsheetId := os.Getenv("SPREADSHEET_ID")
-		writeRange := os.Getenv("SPREADSHEET_RANGE")
-		myval := []interface{}{"One", "Two", "Three"}
-		vr.Values = append(vr.Values, myval)
-		_, err = api.Spreadsheets.Values.Update(spreadsheetId, writeRange, &vr).ValueInputOption("RAW").Do()
-		common.Check(err, "unable to update data into sheet")
-	}
-}
