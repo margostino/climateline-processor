@@ -25,7 +25,7 @@ func Update(input string) string {
 			Title:      instructions[1],
 			SourceName: instructions[2],
 			Location:   instructions[3],
-			Category:   instructions[4],
+			Category:   strings.ToLower(instructions[4]),
 		}
 		id = extractIds(instructions[0], "edit ")
 	} else {

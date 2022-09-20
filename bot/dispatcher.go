@@ -38,7 +38,7 @@ func Reply(message *tgbotapi.Message) string {
 			case PUSH:
 				reply = Push(sanitizedInput)
 			case EDIT, TITLE, SOURCE, LOCATION, CATEGORY:
-				reply = Update(sanitizedInput)
+				reply = Update(input)
 			case FETCH:
 				reply = Fetch(sanitizedInput)
 			case SHOW:
