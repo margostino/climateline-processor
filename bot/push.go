@@ -18,13 +18,16 @@ func PushReply(input string) string {
 
 	lines := strings.Split(input, "\n")
 
-	if len(lines) == 6 {
+	if len(lines) == 8 {
 		var item domain.Item
-		id := sanitizeReply(lines[1], domain.ID_PREFIX)
-		timestamp := sanitizeReply(lines[2], domain.DATE_PREFIX)
-		title := sanitizeReply(lines[3], domain.TITLE_PREFIX)
-		link := sanitizeReply(lines[4], domain.LINK_PREFIX)
-		content := sanitizeReply(lines[5], domain.CONTENT_PREFIX)
+		id := sanitizeReply(lines[0], domain.ID_PREFIX)
+		timestamp := sanitizeReply(lines[1], domain.DATE_PREFIX)
+		title := sanitizeReply(lines[2], domain.TITLE_PREFIX)
+		link := sanitizeReply(lines[3], domain.LINK_PREFIX)
+		content := sanitizeReply(lines[4], domain.CONTENT_PREFIX)
+		source := sanitizeReply(lines[5], domain.SOURCE_PREFIX)
+		location := sanitizeReply(lines[6], domain.LOCATION_PREFIX)
+		category := sanitizeReply(lines[7], domain.CATEGORY_PREFIX)
 
 		items := getCachedItems(id)
 
@@ -32,11 +35,14 @@ func PushReply(input string) string {
 			item = items[0]
 		} else {
 			item = domain.Item{
-				Id:        id,
-				Timestamp: timestamp,
-				Title:     title,
-				Link:      link,
-				Content:   content,
+				Id:         id,
+				Timestamp:  timestamp,
+				Title:      title,
+				Link:       link,
+				Content:    content,
+				SourceName: source,
+				Location:   location,
+				Category:   category,
 			}
 		}
 		reply = pushItem(&item)

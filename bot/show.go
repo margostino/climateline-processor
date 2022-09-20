@@ -47,13 +47,29 @@ func getCachedItems(ids string) []domain.Item {
 }
 
 func buildShowReply(item domain.Item) string {
-	return fmt.Sprintf("🔑 ID: %s\n"+
-		"🗓 Date: %s\n"+
-		"💡 Title: %s\n"+
-		"🔗 Link: <a href='%s'>Here</a>\n"+
-		"📖 Content: %s\n"+
-		"🗳 Source: %s\n"+
-		"📍 Location: %s\n"+
-		"🏷 Category: %s\n",
-		item.Id, item.Timestamp, item.Title, item.Link, item.Content, item.SourceName, item.Location, item.Category)
+	return fmt.Sprintf("%s %s\n"+
+		"%s %s\n"+
+		"%s %s\n"+
+		//"%s <a href='%s'>Here</a>\n",
+		"%s %s\n"+
+		"%s %s\n"+
+		"%s %s\n"+
+		"%s %s\n"+
+		"%s %s\n",
+		domain.ID_PREFIX,
+		item.Id,
+		domain.DATE_PREFIX,
+		item.Timestamp,
+		domain.TITLE_PREFIX,
+		item.Title,
+		domain.LINK_PREFIX,
+		item.Link,
+		domain.CONTENT_PREFIX,
+		item.Content,
+		domain.SOURCE_PREFIX,
+		item.SourceName,
+		domain.LOCATION_PREFIX,
+		item.Location,
+		domain.CATEGORY_PREFIX,
+		item.Category)
 }

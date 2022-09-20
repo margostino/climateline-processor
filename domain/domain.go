@@ -1,12 +1,14 @@
 package domain
 
 const (
-	ID_PREFIX      = "🔑 ID:"
-	DATE_PREFIX    = "🗓 Date:"
-	TITLE_PREFIX   = "💡 Title:"
-	LINK_PREFIX    = "🔗 Link:"
-	SOURCE_PREFIX  = "📥 Source:"
-	CONTENT_PREFIX = "📖 Content:"
+	ID_PREFIX       = "🔑 ID:"
+	DATE_PREFIX     = "🗓 Date:"
+	TITLE_PREFIX    = "💡 Title:"
+	LINK_PREFIX     = "🔗 Link:"
+	SOURCE_PREFIX   = "📥 Source:"
+	CONTENT_PREFIX  = "📖 Content:"
+	LOCATION_PREFIX = "📍 Location:"
+	CATEGORY_PREFIX = "🏷 Category:"
 )
 
 type Item struct {

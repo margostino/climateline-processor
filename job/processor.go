@@ -48,7 +48,10 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 					link = rawLink.Query().Get("url")
 					sourceUrl, err := url.Parse(link)
 					if !common.IsError(err, "when parsing source link") {
-						source = strings.ReplaceAll(sourceUrl.Hostname(), "www.", "")
+						source = common.NewString(sourceUrl.Hostname()).
+							ReplaceAll("www.", "").
+							ReplaceAll(".com", "").
+							Value()
 					}
 				}
 
