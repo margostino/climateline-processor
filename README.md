@@ -15,8 +15,9 @@ The Job retrieve every news into the Admin Telegram Bot in order to approve, edi
 - [x] Cron job for fetching news
 - [x] Telegram bot for handling news workflow (upload, update) towards [Climateline](https://climateline.vercel.app/)
 - [x] Basic and short-time caching
-- [ ] Multi-Source News Fetcher
+- [x] Multi-Source News Fetcher
 - [ ] Create entirely new articles
 - [ ] Detect duplicated article before pushing
 - [ ] Pushing by replying
+- [ ] Detect automatically properties such as location, source, category 
 
