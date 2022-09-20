@@ -5,6 +5,7 @@ const (
 	DATE_PREFIX    = "🗓 Date:"
 	TITLE_PREFIX   = "💡 Title:"
 	LINK_PREFIX    = "🔗 Link:"
+	SOURCE_PREFIX  = "📥 Source:"
 	CONTENT_PREFIX = "📖 Content:"
 )
 

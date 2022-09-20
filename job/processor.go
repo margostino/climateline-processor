@@ -96,11 +96,13 @@ func notify(item *domain.Item) {
 		"%s %s\n"+
 		//"%s <a href='%s'>Here</a>\n"+
 		"%s %s\n"+
-		"%s Content: %s\n",
+		"%s %s\n"+
+		"%s %s\n",
 		domain.ID_PREFIX, item.Id,
 		domain.TITLE_PREFIX, item.Timestamp,
 		domain.TITLE_PREFIX, item.Title,
 		domain.LINK_PREFIX, item.Link,
+		domain.SOURCE_PREFIX, item.SourceName,
 		domain.CONTENT_PREFIX, item.Content)
 	send(message)
 }
