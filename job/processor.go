@@ -112,7 +112,7 @@ func askForUpdates() {
 		"{new title}\n" +
 		"{source name}\n" +
 		"{location}\n" +
-		"{category[agreements | assessment | awareness | warming | wildfires | floods | drought | health]}\n" +
+		"{category[agreements | assessment | awareness | warming | wildfires | floods | drought | health | hurricane]}\n" +
 		"⚡️️ Example:\n" +
 		"edit 1\n" +
 		"Massive heatwaves in Europe\n" +

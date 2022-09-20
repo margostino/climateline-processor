@@ -85,6 +85,8 @@ func generateArticle(item *domain.Item) string {
 		icon = "droplet-slash"
 	case "health":
 		icon = "heart-pulse"
+	case "hurricane":
+		icon = "hurricane"
 	}
 
 	return fmt.Sprintf("---\n"+
