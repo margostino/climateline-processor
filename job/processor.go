@@ -38,22 +38,27 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 
 		if feed != nil {
 			for _, entry := range feed.Items {
-				var link string
+				var link, source string
 				id += 1
-				url, err := url.Parse(entry.Link)
+				rawLink, err := url.Parse(entry.Link)
 
 				if common.IsError(err, "when parsing feed link") {
 					link = entry.Link
 				} else {
-					link = url.Query().Get("url")
+					link = rawLink.Query().Get("url")
+					sourceUrl, err := url.Parse(link)
+					if !common.IsError(err, "when parsing source link") {
+						source = strings.ReplaceAll(sourceUrl.Hostname(), "www.", "")
+					}
 				}
 
 				item := &domain.Item{
-					Id:        strconv.Itoa(id),
-					Timestamp: entry.Updated,
-					Title:     entry.Title,
-					Link:      link,
-					Content:   entry.Content,
+					Id:         strconv.Itoa(id),
+					Timestamp:  entry.Updated,
+					Title:      entry.Title,
+					Link:       link,
+					Content:    entry.Content,
+					SourceName: source,
 				}
 				items = append(items, item)
 			}
