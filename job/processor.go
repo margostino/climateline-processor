@@ -12,6 +12,7 @@ import (
 	"github.com/mmcdole/gofeed"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -37,12 +38,21 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 
 		if feed != nil {
 			for _, entry := range feed.Items {
+				var link string
 				id += 1
+				url, err := url.Parse(entry.Link)
+
+				if common.IsError(err, "when parsing feed link") {
+					link = entry.Link
+				} else {
+					link = url.Query().Get("url")
+				}
+
 				item := &domain.Item{
 					Id:        strconv.Itoa(id),
 					Timestamp: entry.Updated,
 					Title:     entry.Title,
-					Link:      entry.Link,
+					Link:      link,
 					Content:   entry.Content,
 				}
 				items = append(items, item)
@@ -79,7 +89,8 @@ func notify(item *domain.Item) {
 		"%s %s\n"+
 		"%s %s\n"+
 		"%s %s\n"+
-		"%s <a href='%s'>Here</a>\n"+
+		//"%s <a href='%s'>Here</a>\n"+
+		"%s %s\n"+
 		"%s Content: %s\n",
 		domain.ID_PREFIX, item.Id,
 		domain.TITLE_PREFIX, item.Timestamp,

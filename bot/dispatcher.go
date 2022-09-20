@@ -19,7 +19,7 @@ func Reply(message *tgbotapi.Message) string {
 
 	if message.ReplyToMessage != nil {
 		input := message.ReplyToMessage.Text
-		reply = PushItem(input, githubClient)
+		reply = PushReply(input)
 	} else {
 		input := message.Text
 		command := common.NewString(input).
@@ -32,7 +32,7 @@ func Reply(message *tgbotapi.Message) string {
 		if len(commands) > 0 {
 			switch commands[0] {
 			case PUSH:
-				reply = Push(sanitizedInput, githubClient)
+				reply = Push(sanitizedInput)
 			case EDIT:
 				reply = Update(sanitizedInput)
 			case FETCH:

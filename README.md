@@ -18,4 +18,5 @@ The Job retrieve every news into the Admin Telegram Bot in order to approve, edi
 - [ ] Multi-Source News Fetcher
 - [ ] Create entirely new articles
 - [ ] Detect duplicated article before pushing
+- [ ] Pushing by replying
 
