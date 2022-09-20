@@ -7,11 +7,15 @@ import (
 )
 
 const (
-	PUSH  = "push"
-	FETCH = "fetch"
-	CLEAN = "clean"
-	EDIT  = "edit"
-	SHOW  = "show"
+	PUSH     = "push"
+	FETCH    = "fetch"
+	CLEAN    = "clean"
+	EDIT     = "edit"
+	SHOW     = "show"
+	TITLE    = "title"
+	SOURCE   = "source"
+	CATEGORY = "category"
+	LOCATION = "location"
 )
 
 func Reply(message *tgbotapi.Message) string {
@@ -33,7 +37,7 @@ func Reply(message *tgbotapi.Message) string {
 			switch commands[0] {
 			case PUSH:
 				reply = Push(sanitizedInput)
-			case EDIT:
+			case EDIT, TITLE, SOURCE, LOCATION, CATEGORY:
 				reply = Update(sanitizedInput)
 			case FETCH:
 				reply = Fetch(sanitizedInput)
