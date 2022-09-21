@@ -104,7 +104,7 @@ func generateArticle(item *domain.Item) string {
 		"icon: %s\n"+
 		"---\n\n"+
 		"%s\n",
-		item.Title, item.Timestamp, item.Link, item.SourceName, item.Location, icon, item.Content)
+		sanitizeTitle(item.Title), item.Timestamp, item.Link, item.SourceName, item.Location, icon, item.Content)
 }
 
 func sanitizeReply(input string, prefix string) string {
@@ -132,6 +132,13 @@ func sanitizeFilename(value string) string {
 		ReplaceAll("\"", "").
 		ReplaceAll("'", "").
 		ReplaceAll(" ", "-").
+		Value()
+}
+
+func sanitizeTitle(value string) string {
+	return common.NewString(value).
+		ReplaceAll("<b>", "").
+		ReplaceAll("</b>", "").
 		Value()
 }
 
