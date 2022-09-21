@@ -42,14 +42,14 @@ func Bot(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 		if bot.IsValidInput(update.Message) {
 			reply = bot.Reply(update.Message)
+		} else if "/start" == update.Message.Text {
+			reply = "🌎 Welcome!"
 		} else {
 			reply = "Input is not valid"
-			log.Println(reply)
 		}
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
 		reply = "Unauthorized to handle Bot communication"
-		log.Printf(reply)
 	}
 
 	data := Response{
