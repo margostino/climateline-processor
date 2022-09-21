@@ -124,13 +124,14 @@ func getGithubClient() *github.Client {
 	return github.NewClient(tc)
 }
 
-func sanitizeTitle(title string) string {
-	return common.NewString(title).
+func sanitizeFilename(value string) string {
+	return common.NewString(value).
 		ToLower().
 		ReplaceAll("<b>", "").
 		ReplaceAll("</b>", "").
 		ReplaceAll("\"", "").
 		ReplaceAll("'", "").
+		ReplaceAll(" ", "-").
 		Value()
 }
 
@@ -145,8 +146,8 @@ func pushItem(item *domain.Item) string {
 		Message: &message,
 	}
 
-	sanitizedTitle := sanitizeTitle(item.Title)
-	path := fmt.Sprintf("articles/%s.md", strings.ReplaceAll(strings.ToLower(sanitizedTitle), " ", "-"))
+	filename := sanitizeFilename(item.Title)
+	path := fmt.Sprintf("articles/%s.md", filename)
 	_, response, err := githubClient.Repositories.CreateFile(context.Background(), "margostino", "climateline", path, options)
 	common.SilentCheck(err, "when creating new article on repository")
 
