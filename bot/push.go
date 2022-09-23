@@ -84,7 +84,7 @@ func generateArticle(item *domain.Item) string {
 	case "warming":
 		icon = "thermometer-three-quarters"
 	case "wildfires":
-		icon = "fires"
+		icon = "fire"
 	case "floods":
 		icon = "droplet"
 	case "drought":
@@ -93,6 +93,8 @@ func generateArticle(item *domain.Item) string {
 		icon = "heart-pulse"
 	case "hurricane":
 		icon = "hurricane"
+	case "pollution":
+		icon = "smog"
 	}
 
 	return fmt.Sprintf("---\n"+
@@ -129,6 +131,10 @@ func sanitizeFilename(value string) string {
 		ToLower().
 		ReplaceAll("<b>", "").
 		ReplaceAll("</b>", "").
+		ReplaceAll("&", "").
+		ReplaceAll("#", "").
+		ReplaceAll("|", "").
+		ReplaceAll(";", "").
 		ReplaceAll("\"", "").
 		ReplaceAll("'", "").
 		ReplaceAll(" ", "-").

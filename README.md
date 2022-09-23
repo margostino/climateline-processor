@@ -6,9 +6,6 @@
 This repo implements the Job to fetch the news of the day related to Climate Change.  
 The Job retrieve every news into the Admin Telegram Bot in order to approve, edit and push new article into [Climateline](https://climateline.vercel.app/) website.
 
-### Demo
-[![Watch demo](https://img.youtube.com/vi/qJAKAkadVWQ/default.jpg)](https://www.youtube.com/watch?v=qJAKAkadVWQ)
-
 ### Architecture
 
 ![](assets/architecture.png#100x)
