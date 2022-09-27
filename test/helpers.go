@@ -3,11 +3,14 @@ package test
 import (
 	"encoding/json"
 	"fmt"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/margostino/climateline-processor/api"
+	"github.com/margostino/climateline-processor/bot"
 	"github.com/margostino/climateline-processor/domain"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"testing"
 )
 
 func setJobSecret(request *http.Request) {
@@ -79,4 +82,14 @@ func parseBotResponse(response *httptest.ResponseRecorder) (*domain.BotResponse,
 	var botResponse domain.BotResponse
 	err := json.NewDecoder(response.Body).Decode(&botResponse)
 	return &botResponse, err
+}
+
+func createBotMessage(input string) *tgbotapi.Message {
+	return &tgbotapi.Message{
+		Text: input,
+	}
+}
+
+func validateInput(t *testing.T, input string) {
+	assertValidInput(bot.IsValidInput(createBotMessage(input)), input, t)
 }

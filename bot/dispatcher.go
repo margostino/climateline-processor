@@ -16,6 +16,10 @@ const (
 	SOURCE   = "source"
 	CATEGORY = "category"
 	LOCATION = "location"
+	LINK     = "link"
+	DATE     = "date"
+	CONTENT  = "content"
+	NEW      = "new"
 )
 
 func Reply(message *tgbotapi.Message) string {
@@ -39,6 +43,8 @@ func Reply(message *tgbotapi.Message) string {
 				reply = Push(sanitizedInput)
 			case EDIT, TITLE, SOURCE, LOCATION, CATEGORY:
 				reply = Update(input)
+			case NEW:
+				reply = New(input)
 			case FETCH:
 				reply = Fetch(sanitizedInput)
 			case SHOW:
