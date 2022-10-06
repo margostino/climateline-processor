@@ -20,7 +20,7 @@ const (
 	DATE     = "date"
 	CONTENT  = "content"
 	NEW      = "new"
-	HELP     = "HELP"
+	HELP     = "help"
 )
 
 func Reply(message *tgbotapi.Message) string {
