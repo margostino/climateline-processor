@@ -69,6 +69,8 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 
 	for _, item := range items {
 		notify(item)
+		askForUpdates()
+		updateCache(items)
 	}
 
 	response := domain.JobResponse{
@@ -83,10 +85,6 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 		(*writer).WriteHeader(http.StatusOK)
 		(*writer).Write(jsonResp)
 	}
-
-	updateCache(items)
-	askForUpdates()
-
 }
 
 func notify(item *domain.Item) {
