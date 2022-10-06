@@ -25,6 +25,7 @@ var instructions = []string{
 	`show [0-9]+`,
 	`show`,
 	`clean`,
+	`help`,
 	`push ([0-9]+\s*)+`,
 	`fetch`,
 	`title [0-9]+ .*?`,
@@ -40,6 +41,7 @@ var commands = []string{
 	"/show",
 	"/clean",
 	"/fetch",
+	"/help",
 	regexBySourceConcat("/fetch", "_"),
 }
 
