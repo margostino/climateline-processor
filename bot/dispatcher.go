@@ -20,6 +20,7 @@ const (
 	DATE     = "date"
 	CONTENT  = "content"
 	NEW      = "new"
+	HELP     = "HELP"
 )
 
 func Reply(message *tgbotapi.Message) string {
@@ -39,6 +40,8 @@ func Reply(message *tgbotapi.Message) string {
 
 		if len(commands) > 0 {
 			switch commands[0] {
+			case HELP:
+				reply = Help()
 			case PUSH:
 				reply = Push(sanitizedInput)
 			case EDIT, TITLE, SOURCE, LOCATION, CATEGORY:

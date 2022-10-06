@@ -69,7 +69,6 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 
 	for _, item := range items {
 		notify(item)
-		askForUpdates()
 		updateCache(items)
 	}
 
@@ -101,25 +100,6 @@ func notify(item *domain.Item) {
 		domain.SOURCE_PREFIX, item.SourceName,
 		domain.CONTENT_PREFIX, item.Content,
 		domain.LINK_PREFIX, item.Link)
-	send(message)
-}
-
-func askForUpdates() {
-	message := "❓ What do you want to do?\n" +
-		"➡️ edit {id}\n" +
-		"{new title}\n" +
-		"{source name}\n" +
-		"{location}\n" +
-		"{category[agreements | assessment | awareness | warming | wildfires | floods | drought | health | hurricane]}\n" +
-		"⚡️️ Example:\n" +
-		"edit 1\n" +
-		"Massive heatwaves in Europe\n" +
-		"Washington Post\n" +
-		"Europe\n" +
-		"warming\n" +
-		"➡️ push {ids}\n" +
-		"⚡️️ Example:\n" +
-		"push 1 2"
 	send(message)
 }
 
