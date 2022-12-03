@@ -19,7 +19,7 @@ import (
 )
 
 var botApi *tgbotapi.BotAPI
-var urls []string
+var urls []*config.UrlConfig
 
 func Execute(request *http.Request, writer *http.ResponseWriter) {
 	var id = 0
@@ -33,43 +33,52 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 	urls = config.GetUrls(category)
 
 	for _, feedUrl := range urls {
-		fp := gofeed.NewParser()
-		feed, _ := fp.ParseURL(feedUrl)
+		if feedUrl.BotEnabled || feedUrl.TwitterEnabled {
+			fp := gofeed.NewParser()
+			feed, _ := fp.ParseURL(feedUrl.Url)
 
-		if feed != nil {
-			for _, entry := range feed.Items {
-				var link, source string
-				id += 1
-				rawLink, err := url.Parse(entry.Link)
+			if feed != nil {
+				for _, entry := range feed.Items {
+					var link, source string
+					id += 1
+					rawLink, err := url.Parse(entry.Link)
 
-				if common.IsError(err, "when parsing feed link") {
-					link = entry.Link
-				} else {
-					link = rawLink.Query().Get("url")
-					sourceUrl, err := url.Parse(link)
-					if !common.IsError(err, "when parsing source link") {
-						source = strings.ReplaceAll(sourceUrl.Hostname(), "www.", "")
+					if common.IsError(err, "when parsing feed link") {
+						link = entry.Link
+					} else {
+						link = rawLink.Query().Get("url")
+						sourceUrl, err := url.Parse(link)
+						if !common.IsError(err, "when parsing source link") {
+							source = strings.ReplaceAll(sourceUrl.Hostname(), "www.", "")
+						}
 					}
-				}
 
-				item := &domain.Item{
-					Id:         strconv.Itoa(id),
-					Timestamp:  entry.Updated,
-					Title:      entry.Title,
-					Link:       link,
-					Content:    entry.Content,
-					SourceName: source,
+					item := &domain.Item{
+						Id:                  strconv.Itoa(id),
+						Timestamp:           entry.Updated,
+						Title:               entry.Title,
+						Link:                link,
+						Content:             entry.Content,
+						SourceName:          source,
+						ShouldNotifyBot:     feedUrl.BotEnabled,
+						ShouldNotifyTwitter: feedUrl.TwitterEnabled,
+					}
+					items = append(items, item)
 				}
-				items = append(items, item)
+			} else {
+				log.Printf("There are no feeds")
 			}
-		} else {
-			log.Printf("There are no feeds")
 		}
 	}
 
 	for _, item := range items {
-		notify(item)
-		updateCache(items)
+		if item.ShouldNotifyBot {
+			notifyBot(item)
+			updateCache(items)
+		}
+		if item.ShouldNotifyTwitter {
+			notifyTwitter(item)
+		}
 	}
 
 	response := domain.JobResponse{
@@ -86,7 +95,11 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 	}
 }
 
-func notify(item *domain.Item) {
+func notifyTwitter(item *domain.Item) {
+	// TODO
+}
+
+func notifyBot(item *domain.Item) {
 	message := fmt.Sprintf("🔔 New article! \n"+
 		"%s %s\n"+
 		"%s %s\n"+
