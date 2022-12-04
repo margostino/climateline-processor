@@ -37,13 +37,13 @@ func TestRunJobNewItem(t *testing.T) {
 
 	feedContent := mockRssFeed()
 
-	MOCK_FEED_URL := "127.0.0.1:52521"
+	mockFeedUrl := "127.0.0.1:52521"
 	feedServer := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, err := w.Write([]byte(feedContent))
 		require.NoError(t, err)
 	}))
-	l, _ := net.Listen("tcp", MOCK_FEED_URL)
+	l, _ := net.Listen("tcp", mockFeedUrl)
 	feedServer.Listener = l
 	feedServer.Start()
 	defer feedServer.Close()
@@ -85,7 +85,6 @@ func TestRunJobNewItem(t *testing.T) {
 	err = json.NewDecoder(response.Body).Decode(&jobResponse)
 
 	if jobResponse.Items != 1 {
-		r := os.Getenv("SPREADSHEET_RANGE")
-		t.Errorf("handler returned unexpected response size: got %v want %v range %s", jobResponse.Items, 1, r)
+		t.Errorf("handler returned unexpected response size: got %v want %v", jobResponse.Items, 1)
 	}
 }
