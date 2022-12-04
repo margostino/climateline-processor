@@ -85,6 +85,6 @@ func TestRunJobNewItem(t *testing.T) {
 	err = json.NewDecoder(response.Body).Decode(&jobResponse)
 
 	if jobResponse.Items != 1 {
-		t.Errorf("handler returned unexpected response size: got %v want %v", jobResponse.Items, 1)
+		t.Errorf("handler returned unexpected response size: got %v want %v range %s", jobResponse.Items, 1, os.Getenv("SPREADSHEET_RANGE"))
 	}
 }
