@@ -11,7 +11,6 @@ import (
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/config"
 	"github.com/margostino/climateline-processor/domain"
-	"github.com/margostino/climateline-processor/urlshortener"
 	"github.com/mmcdole/gofeed"
 	"log"
 	"net/http"
@@ -104,7 +103,11 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 
 func notifyTwitter(item *domain.Item) {
 	var tweet string
-	shorterLink := urlshortener.Shorten(item.Link)
+	//shorterLink := urlshortener.Shorten(item.Link)
+	shorterLink := item.Link
+	//params := &twitter.StatusUpdateParams{
+	//	AttachmentURL: item.Link,
+	//}
 	title := sanitizeTweet(item.Title)
 
 	if shorterLink != "" {
