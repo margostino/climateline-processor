@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"html"
 	"strings"
 )
 
@@ -26,6 +27,11 @@ func (s *String) ToLower() *String {
 
 func (s *String) ReplaceAll(old string, new string) *String {
 	s.value = strings.ReplaceAll(s.value, old, new)
+	return s
+}
+
+func (s *String) UnescapeString() *String {
+	s.value = html.UnescapeString(s.value)
 	return s
 }
 
