@@ -37,7 +37,6 @@ func getRequest(url string) *http.Request {
 			request.Header.Set("Content-Type", "application/json")
 			return request
 		}
-
 	}
 	return nil
 }
