@@ -20,6 +20,7 @@ type Item struct {
 	SourceName          string `json:"source_name"`
 	Location            string `json:"location"`
 	Category            string `json:"category"`
+	Tags                string
 	ShouldNotifyBot     bool
 	ShouldNotifyTwitter bool
 }

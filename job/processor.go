@@ -66,6 +66,7 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 						Link:                link,
 						Content:             entry.Content,
 						SourceName:          source,
+						Tags:                feedUrl.Tags,
 						ShouldNotifyBot:     feedUrl.BotEnabled,
 						ShouldNotifyTwitter: feedUrl.TwitterEnabled,
 					}
@@ -83,8 +84,7 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 			updateCache(items)
 		}
 		if item.ShouldNotifyTwitter {
-			println("djkfbjkdsbfjkdsbfjkdsbjkvbsfjkgbjksfb")
-			//notifyTwitter(item)
+			notifyTwitter(item)
 		}
 	}
 
@@ -108,9 +108,9 @@ func notifyTwitter(item *domain.Item) {
 	title := sanitizeTweet(item.Title)
 
 	if shorterLink != "" {
-		tweet = fmt.Sprintf("%s\nSource: %s (%s)\n", title, item.SourceName, shorterLink)
+		tweet = fmt.Sprintf("%s\nSource: %s (%s)\n%s", title, item.SourceName, shorterLink, item.Tags)
 	} else {
-		tweet = fmt.Sprintf("%s\nSource: %s\n", title, item.SourceName)
+		tweet = fmt.Sprintf("%s\nSource: %s\n%s", title, item.SourceName, item.Tags)
 	}
 
 	_, resp, err := twitterApi.Statuses.Update(tweet, nil)

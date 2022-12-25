@@ -13,6 +13,7 @@ import (
 type UrlConfig struct {
 	Url            string
 	Category       string
+	Tags           string
 	BotEnabled     bool
 	TwitterEnabled bool
 }
@@ -32,7 +33,7 @@ func GetUrls(inputCategory string) []*UrlConfig {
 			for _, row := range resp.Values {
 				var isBotEnabled, isTwitterEnabled bool
 				var category string
-				if len(row) == 4 {
+				if len(row) == 5 {
 					category = row[1].(string)
 					isBotEnabled, err = strconv.ParseBool(row[2].(string))
 					common.SilentCheck(err, "when fetching Bot enabled config from feed urls")
@@ -52,6 +53,7 @@ func GetUrls(inputCategory string) []*UrlConfig {
 				if isBotEnabled || isTwitterEnabled {
 					urlConfig := &UrlConfig{
 						Url:            row[0].(string),
+						Tags:           row[4].(string),
 						Category:       category,
 						BotEnabled:     isBotEnabled,
 						TwitterEnabled: isTwitterEnabled,

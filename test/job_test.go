@@ -61,6 +61,12 @@ func TestRunJobNewItem(t *testing.T) {
 	defer cacheServer.Close()
 
 	os.Setenv("TELEGRAM_BOT_TOKEN", "dummy")
+	os.Setenv("BITLY_TOKEN", "dummy")
+	os.Setenv("BITLY_SHORTENER_ENDPOINT", "dummy")
+	os.Setenv("TWITTER_CONSUMER_KEY", "dummy")
+	os.Setenv("TWITTER_CONSUMER_SECRET", "dummy")
+	os.Setenv("TWITTER_TOKEN", "dummy")
+	os.Setenv("TWITTER_TOKEN_SECRET", "dummy")
 	os.Setenv("FEED_URL", feedServer.URL)
 	os.Setenv("CACHE_BASE_URL", cacheServer.URL)
 
