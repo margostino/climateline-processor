@@ -34,42 +34,40 @@ func Fetch(request *http.Request, writer *http.ResponseWriter) {
 	urls = config.GetUrls(category)
 
 	for _, feedUrl := range urls {
-		if feedUrl.BotEnabled || feedUrl.TwitterEnabled {
-			fp := gofeed.NewParser()
-			feed, _ := fp.ParseURL(feedUrl.Url)
+		fp := gofeed.NewParser()
+		feed, _ := fp.ParseURL(feedUrl.Url)
 
-			if feed != nil {
-				for _, entry := range feed.Items {
-					var link, source string
-					id += 1
-					rawLink, err := url.Parse(entry.Link)
+		if feed != nil {
+			for _, entry := range feed.Items {
+				var link, source string
+				id += 1
+				rawLink, err := url.Parse(entry.Link)
 
-					if common.IsError(err, "when parsing feed link") {
-						link = entry.Link
-					} else {
-						link = rawLink.Query().Get("url")
-						sourceUrl, err := url.Parse(link)
-						if !common.IsError(err, "when parsing source link") {
-							source = strings.ReplaceAll(sourceUrl.Hostname(), "www.", "")
-						}
+				if common.IsError(err, "when parsing feed link") {
+					link = entry.Link
+				} else {
+					link = rawLink.Query().Get("url")
+					sourceUrl, err := url.Parse(link)
+					if !common.IsError(err, "when parsing source link") {
+						source = strings.ReplaceAll(sourceUrl.Hostname(), "www.", "")
 					}
-
-					item := &domain.Item{
-						Id:                  strconv.Itoa(id),
-						Timestamp:           entry.Updated,
-						Title:               entry.Title,
-						Link:                link,
-						Content:             entry.Content,
-						SourceName:          source,
-						Tags:                feedUrl.Tags,
-						ShouldNotifyBot:     feedUrl.BotEnabled,
-						ShouldNotifyTwitter: feedUrl.TwitterEnabled,
-					}
-					items = append(items, item)
 				}
-			} else {
-				log.Printf("There are no feeds")
+
+				item := &domain.Item{
+					Id:                  strconv.Itoa(id),
+					Timestamp:           entry.Updated,
+					Title:               entry.Title,
+					Link:                link,
+					Content:             entry.Content,
+					SourceName:          source,
+					Tags:                feedUrl.Tags,
+					ShouldNotifyBot:     feedUrl.BotEnabled,
+					ShouldNotifyTwitter: feedUrl.TwitterEnabled,
+				}
+				items = append(items, item)
 			}
+		} else {
+			log.Printf("There are no feeds")
 		}
 	}
 

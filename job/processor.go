@@ -32,7 +32,6 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 	urls = config.GetUrls(category)
 
 	items, err := internal.FetchNews(category)
-	updateCache(items)
 
 	for _, item := range items {
 		if item.ShouldNotifyBot {

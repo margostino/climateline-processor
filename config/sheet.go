@@ -43,14 +43,11 @@ func GetUrls(inputCategory string) []*UrlConfig {
 					log.Printf("Configuration sheet for Feed Urls is not valid. It must have 3 columns. It has %d\n", len(row))
 				}
 
-				matchCategory := inputCategory != "*" && inputCategory == category
+				matchCategory := (inputCategory != "*" && inputCategory == category) || inputCategory == "*"
 
 				if matchCategory {
-					isBotEnabled = true
-					isTwitterEnabled = false
-				}
-
-				if isBotEnabled || isTwitterEnabled {
+					//isBotEnabled = true
+					//isTwitterEnabled = false
 					urlConfig := &UrlConfig{
 						Url:            row[0].(string),
 						Tags:           row[4].(string),
