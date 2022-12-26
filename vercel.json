@@ -11,7 +11,11 @@
       "memory": 1024,
       "maxDuration": 10
     },
-    "api/job.go": {
+    "api/job-collector.go": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/job-publisher.go": {
       "memory": 1024,
       "maxDuration": 10
     },

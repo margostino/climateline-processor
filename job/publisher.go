@@ -1,12 +1,10 @@
 package job
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
-	"github.com/margostino/climateline-processor/cache"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/config"
 	"github.com/margostino/climateline-processor/domain"
@@ -18,10 +16,9 @@ import (
 )
 
 var twitterApi *twitter.Client
-var urls []*config.UrlConfig
 var bitlyDomain = "bit.ly"
 
-func Execute(request *http.Request, writer *http.ResponseWriter) {
+func Publish(request *http.Request, writer *http.ResponseWriter) {
 	var items = make([]*domain.Item, 0)
 	twitterApi = newTwitterApi()
 
@@ -34,9 +31,6 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 	items, err := internal.FetchNews(category)
 
 	for _, item := range items {
-		if item.ShouldNotifyBot {
-			internal.NotifyBot(item)
-		}
 		if item.ShouldNotifyTwitter {
 			notifyTwitter(item)
 		}
@@ -83,25 +77,6 @@ func sanitizeTweet(value string) string {
 		ReplaceAll("<b>", "").
 		ReplaceAll("</b>", "").
 		Value()
-}
-
-func updateCache(items []*domain.Item) {
-	client := &http.Client{}
-	json, err := json.Marshal(items)
-
-	if !common.IsError(err, "when updating cache") {
-		request, err := http.NewRequest(http.MethodPost, cache.GetBaseCacheUrl(), bytes.NewBuffer(json))
-		request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
-		request.Header.Set("Content-Type", "application/json")
-		response, err := client.Do(request)
-
-		common.SilentCheck(err, "in response of caching")
-
-		if err == nil && response.StatusCode != 201 {
-			log.Printf("Updating cache was not successful. Status: %d\n", response.StatusCode)
-		}
-	}
-
 }
 
 func newTwitterApi() *twitter.Client {
