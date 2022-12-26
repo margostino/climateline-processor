@@ -33,7 +33,7 @@ func Fetch(input string) string {
 				"%s %s\n"+
 				"%s %s\n"+
 				"%s %s\n"+
-				"%s %s\n", //"%s <a href='%s'>Here</a>\n",
+				"%s %s\n\n\n", //"%s <a href='%s'>Here</a>\n",
 				domain.ID_PREFIX, item.Id,
 				domain.DATE_PREFIX, item.Timestamp,
 				domain.TITLE_PREFIX, item.Title,
