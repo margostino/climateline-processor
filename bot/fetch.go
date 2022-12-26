@@ -41,7 +41,7 @@ func Fetch(input string) string {
 				domain.CONTENT_PREFIX, item.Content,
 				domain.LINK_PREFIX, item.Link)
 		}
-		//reply = "✅ Completed successfully"
+		reply = "✅ xCompleted successfully"
 	} else {
 		reply = "🔴 Fetcher failed"
 	}
