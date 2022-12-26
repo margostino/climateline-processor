@@ -10,7 +10,7 @@ func Job(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	if security.IsAuthorized(r) {
-		job.Execute(r, &w)
+		job.Publish(r, &w)
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
 	}
