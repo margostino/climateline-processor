@@ -55,6 +55,9 @@ var Sources = []string{
 	"heatwave",
 	"hurricanes",
 	"wildfires",
+	"deforestation",
+	"warming",
+	"oceans",
 }
 
 func SanitizeInput(input string) string {

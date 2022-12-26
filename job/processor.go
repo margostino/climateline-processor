@@ -11,10 +11,9 @@ import (
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/config"
 	"github.com/margostino/climateline-processor/domain"
-	"github.com/mmcdole/gofeed"
+	"github.com/margostino/climateline-processor/news"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -26,7 +25,6 @@ var urls []*config.UrlConfig
 var bitlyDomain = "bit.ly"
 
 func Execute(request *http.Request, writer *http.ResponseWriter) {
-	var id = 0
 	var items = make([]*domain.Item, 0)
 	botApi, _ = newBot()
 	twitterApi = newTwitterApi()
@@ -37,45 +35,7 @@ func Execute(request *http.Request, writer *http.ResponseWriter) {
 	}
 	urls = config.GetUrls(category)
 
-	for _, feedUrl := range urls {
-		if feedUrl.BotEnabled || feedUrl.TwitterEnabled {
-			fp := gofeed.NewParser()
-			feed, _ := fp.ParseURL(feedUrl.Url)
-
-			if feed != nil {
-				for _, entry := range feed.Items {
-					var link, source string
-					id += 1
-					rawLink, err := url.Parse(entry.Link)
-
-					if common.IsError(err, "when parsing feed link") {
-						link = entry.Link
-					} else {
-						link = rawLink.Query().Get("url")
-						sourceUrl, err := url.Parse(link)
-						if !common.IsError(err, "when parsing source link") {
-							source = strings.ReplaceAll(sourceUrl.Hostname(), "www.", "")
-						}
-					}
-
-					item := &domain.Item{
-						Id:                  strconv.Itoa(id),
-						Timestamp:           entry.Updated,
-						Title:               entry.Title,
-						Link:                link,
-						Content:             entry.Content,
-						SourceName:          source,
-						Tags:                feedUrl.Tags,
-						ShouldNotifyBot:     feedUrl.BotEnabled,
-						ShouldNotifyTwitter: feedUrl.TwitterEnabled,
-					}
-					items = append(items, item)
-				}
-			} else {
-				log.Printf("There are no feeds")
-			}
-		}
-	}
+	items, err := fetchItems(category)
 
 	for _, item := range items {
 		if item.ShouldNotifyBot {
@@ -196,4 +156,19 @@ func newTwitterApi() *twitter.Client {
 	httpClient := config.Client(oauth1.NoContext, oauthToken)
 	client := twitter.NewClient(httpClient)
 	return client
+}
+
+func fetchItems(category string) ([]*domain.Item, error) {
+	client := &http.Client{}
+	url := fmt.Sprintf("%s?category=%s", news.GetBaseNewsUrl(), category)
+	request, err := http.NewRequest(http.MethodGet, url, nil)
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
+	response, err := client.Do(request)
+	if err == nil && response.StatusCode == 200 {
+		var items []*domain.Item
+		err := json.NewDecoder(response.Body).Decode(&items)
+		return items, err
+	} else {
+		return nil, err
+	}
 }

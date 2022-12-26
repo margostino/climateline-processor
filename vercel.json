@@ -7,6 +7,10 @@
       "memory": 1024,
       "maxDuration": 10
     },
+    "api/news.go": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
     "api/job.go": {
       "memory": 1024,
       "maxDuration": 10

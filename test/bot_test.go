@@ -121,6 +121,12 @@ func TestFetchInput(t *testing.T) {
 		withBody(items).
 		start(t)
 
+	newsServer := NewMockServer().
+		withMethod(http.MethodGet).
+		withStatus(http.StatusOK).
+		withBody(items).
+		start(t)
+
 	feeds := mockRssFeed()
 	feedServer := NewMockServer().
 		withMethod(http.MethodGet).
@@ -134,6 +140,7 @@ func TestFetchInput(t *testing.T) {
 		start(t)
 
 	os.Setenv("CACHE_BASE_URL", cacheServer.Url)
+	os.Setenv("NEWS_BASE_URL", newsServer.Url)
 	os.Setenv("FEED_URL", feedServer.Url)
 	os.Setenv("JOB_BASE_URL", jobServer.Url)
 
@@ -142,5 +149,5 @@ func TestFetchInput(t *testing.T) {
 	require.NoError(t, err)
 	assertStatus(response, http.StatusOK, t)
 	assertResponse(botResponse.ChatId != 1, botResponse.ChatId, 1, t)
-	assertResponse(!strings.Contains(botResponse.Text, "Completed successfully"), botResponse.Text, "Completed successfully", t)
+	assertResponse(!strings.Contains(botResponse.Text, "ID: mock.id"), botResponse.Text, "One item with ID: mock.id", t)
 }
