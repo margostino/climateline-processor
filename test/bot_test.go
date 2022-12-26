@@ -143,11 +143,12 @@ func TestFetchInput(t *testing.T) {
 	os.Setenv("NEWS_BASE_URL", newsServer.Url)
 	os.Setenv("FEED_URL", feedServer.Url)
 	os.Setenv("JOB_BASE_URL", jobServer.Url)
+	os.Setenv("TELEGRAM_BOT_TOKEN", "dummy")
 
 	response := call(&request)
 	botResponse, err := parseBotResponse(response)
 	require.NoError(t, err)
 	assertStatus(response, http.StatusOK, t)
 	assertResponse(botResponse.ChatId != 1, botResponse.ChatId, 1, t)
-	assertResponse(!strings.Contains(botResponse.Text, "ID: mock.id"), botResponse.Text, "One item with ID: mock.id", t)
+	assertResponse(!strings.Contains(botResponse.Text, "Completed successfully"), botResponse.Text, "Completed successfully", t)
 }
