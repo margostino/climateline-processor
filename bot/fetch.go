@@ -26,7 +26,7 @@ func Fetch(input string) string {
 	items, err := fetchItems(category)
 
 	if !common.IsError(err, "when fetching news") {
-		for _, item := range items {
+		for _, item := range items[:2] {
 			reply += fmt.Sprintf("🔔 New article! \n"+
 				"%s %s\n"+
 				"%s %s\n"+
@@ -41,7 +41,7 @@ func Fetch(input string) string {
 				domain.CONTENT_PREFIX, item.Content,
 				domain.LINK_PREFIX, item.Link)
 		}
-		reply = "✅ xCompleted successfully"
+		//reply = "✅ Completed successfully"
 	} else {
 		reply = "🔴 Fetcher failed"
 	}
