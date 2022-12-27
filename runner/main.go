@@ -9,7 +9,8 @@ import (
 func main() {
 	//http.HandleFunc("/", api.RunJob)
 	http.HandleFunc("/bot", api.Bot)
-	http.HandleFunc("/job", api.Job)
+	http.HandleFunc("/publisher-job", api.ExecutePublisherJob)
+	http.HandleFunc("/collector-job", api.ExecuteCollectorJob)
 	http.HandleFunc("/news", api.News)
 	http.HandleFunc("/cache", api.Cache)
 	log.Println("Starting Server in :8080")

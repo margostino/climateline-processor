@@ -19,7 +19,7 @@ func TestJobUnauthorized(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(api.Job)
+	handler := http.HandlerFunc(api.ExecuteCollectorJob)
 
 	handler.ServeHTTP(rr, req)
 
@@ -74,7 +74,7 @@ func TestRunJobNewItem(t *testing.T) {
 	defer cacheServer.Close()
 
 	response := httptest.NewRecorder()
-	handler := http.HandlerFunc(api.Job)
+	handler := http.HandlerFunc(api.ExecuteCollectorJob)
 
 	handler.ServeHTTP(response, &request)
 

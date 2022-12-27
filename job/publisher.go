@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -20,19 +21,27 @@ var bitlyDomain = "bit.ly"
 
 func Publish(request *http.Request, writer *http.ResponseWriter) {
 	var items = make([]*domain.Item, 0)
+
 	twitterApi = newTwitterApi()
 
 	category := strings.ToLower(request.URL.Query().Get("category"))
+	publishForced, err := strconv.ParseBool(request.URL.Query().Get("publish_forced"))
+	if err != nil {
+		publishForced = false
+	}
 	if category == "" {
 		category = "*"
 	}
 	urls = config.GetUrls(category)
 
-	items, err := internal.FetchNews(category)
+	items, err = internal.FetchNews(category)
+
+	log.Printf("Category: %s\n", category)
+	log.Printf("Publish Forced: %t\n", publishForced)
 
 	for _, item := range items {
-		if item.ShouldNotifyTwitter {
-			notifyTwitter(item)
+		if publishForced || item.ShouldNotifyTwitter {
+			//notifyTwitter(item)
 		}
 	}
 

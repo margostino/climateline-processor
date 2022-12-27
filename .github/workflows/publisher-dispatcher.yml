@@ -1,0 +1,33 @@
+name: Publisher Dispatcher
+
+on:
+  workflow_dispatch:
+    inputs:
+      publishForced:
+        description: 'Flag to force publisher regardless the configuration'
+        type: publish_forced
+        required: true
+        default: false
+      category:
+        description: 'News Category to filter out'
+        type: category
+        required: true
+        default: '*'
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: false
+        
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch new articles
+        run: |
+          curl --request GET \
+          --url 'https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED' \
+          --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}'
+        env:
+          PUBLISH_FORCED: ${{ inputs.publishForced }}
+          CATEGORY: ${{ inputs.category }}
+          ENVIRONMENT: ${{ inputs.environment }}

@@ -55,7 +55,6 @@ func PushReply(input string) string {
 
 func Push(input string) string {
 	var reply string
-	githubClient = getGithubClient()
 
 	ids := extractIds(input, "push ")
 	items := getCachedItems(ids)
@@ -151,7 +150,6 @@ func sanitizeTitle(value string) string {
 func pushItem(item *domain.Item) string {
 	var reply string
 	githubClient = getGithubClient()
-
 	content := generateArticle(item)
 	message := "new article from workflow"
 	options := &github.RepositoryContentFileOptions{

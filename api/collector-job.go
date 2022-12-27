@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-func Job(w http.ResponseWriter, r *http.Request) {
+func ExecuteCollectorJob(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	if security.IsAuthorized(r) {
-		job.Publish(r, &w)
+		job.Collect(r, &w)
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
 	}

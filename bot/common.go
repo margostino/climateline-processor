@@ -28,11 +28,13 @@ var instructions = []string{
 	`help`,
 	`push ([0-9]+\s*)+`,
 	`fetch`,
+	`publish`,
 	`title [0-9]+ .*?`,
 	`source [0-9]+ .*?`,
 	`location [0-9]+ .*?`,
 	fmt.Sprintf(`category [0-9]+ (%s)`, strings.Join(Categories, "|")),
 	regexBySourceConcat("fetch", " "),
+	regexBySourceConcat("publish", " "),
 	fmt.Sprintf(`edit [0-9]+\n.*?\n.*?\n.*?\n(%s)`, strings.Join(Categories, "|")),
 	fmt.Sprintf(`new \n.*?\n.*?\n.*?\n.*?\n.*?\n(%s)\n.*?`, strings.Join(Categories, "|")),
 }
@@ -41,8 +43,10 @@ var commands = []string{
 	"/show",
 	"/clean",
 	"/fetch",
+	"/publish",
 	"/help",
 	regexBySourceConcat("/fetch", "_"),
+	regexBySourceConcat("/publish", "_"),
 }
 
 var Sources = []string{

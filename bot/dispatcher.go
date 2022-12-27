@@ -21,6 +21,7 @@ const (
 	CONTENT  = "content"
 	NEW      = "new"
 	HELP     = "help"
+	PUBLISH  = "publish"
 )
 
 func Reply(message *tgbotapi.Message) string {
@@ -50,6 +51,8 @@ func Reply(message *tgbotapi.Message) string {
 				reply = New(input)
 			case FETCH:
 				reply = Fetch(sanitizedInput)
+			case PUBLISH:
+				reply = Publish(sanitizedInput)
 			case SHOW:
 				reply = Show(sanitizedInput)
 			case CLEAN:
