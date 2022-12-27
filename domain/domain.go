@@ -1,5 +1,7 @@
 package domain
 
+import "time"
+
 const (
 	ID_PREFIX       = "🔑 ID:"
 	DATE_PREFIX     = "🗓 Date:"
@@ -12,14 +14,16 @@ const (
 )
 
 type Item struct {
-	Id                  string `json:"id"`
-	Timestamp           string `json:"timestamp"`
-	Title               string `json:"title"`
-	Link                string `json:"link"`
-	Content             string `json:"content"`
-	SourceName          string `json:"source_name"`
-	Location            string `json:"location"`
-	Category            string `json:"category"`
+	Id                  string     `json:"id"`
+	Timestamp           string     `json:"timestamp"`
+	Title               string     `json:"title"`
+	Link                string     `json:"link"`
+	Content             string     `json:"content"`
+	SourceName          string     `json:"source_name"`
+	Location            string     `json:"location"`
+	Category            string     `json:"category"`
+	Updated             *time.Time `json:"updated"`
+	Published           *time.Time `json:"published"`
 	Tags                string
 	ShouldNotifyBot     bool
 	ShouldNotifyTwitter bool

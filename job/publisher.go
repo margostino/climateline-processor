@@ -32,12 +32,13 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 	if category == "" {
 		category = "*"
 	}
-	urls = config.GetUrls(category)
-
-	items, err = internal.FetchNews(category)
 
 	log.Printf("Category: %s\n", category)
 	log.Printf("Publish Forced: %t\n", publishForced)
+
+	urls = config.GetUrls(category)
+
+	items, err = internal.FetchNews(category)
 
 	for _, item := range items {
 		if publishForced || item.ShouldNotifyTwitter {

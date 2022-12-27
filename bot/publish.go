@@ -1,7 +1,7 @@
 package bot
 
 import (
-	"github.com/margostino/climateline-processor/common"
+	"fmt"
 	"github.com/margostino/climateline-processor/internal"
 	"strings"
 )
@@ -17,15 +17,12 @@ func Publish(input string) string {
 		category = "*"
 	}
 
-	items, err := internal.FetchNews(category)
+	response, err := internal.PublishNews(category, true)
 
-	if !common.IsError(err, "when fetching news") {
-		for _, item := range items {
-			internal.NotifyBot(item)
-		}
-		reply = "✅ Completed successfully"
+	if err != nil {
+		reply = fmt.Sprintf("🔴 Fetcher failed: %s", err.Error())
 	} else {
-		reply = "🔴 Fetcher failed"
+		reply = fmt.Sprintf("✅ Completed successfully (%d items published)", response.Items)
 	}
 
 	return reply

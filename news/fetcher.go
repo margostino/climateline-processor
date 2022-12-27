@@ -61,6 +61,8 @@ func Fetch(request *http.Request, writer *http.ResponseWriter) {
 					Content:             entry.Content,
 					SourceName:          source,
 					Tags:                feedUrl.Tags,
+					Updated:             entry.UpdatedParsed,
+					Published:           entry.PublishedParsed,
 					ShouldNotifyBot:     feedUrl.BotEnabled,
 					ShouldNotifyTwitter: feedUrl.TwitterEnabled,
 				}
