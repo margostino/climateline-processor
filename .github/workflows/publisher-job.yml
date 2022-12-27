@@ -1,7 +1,7 @@
 name: Publisher Job
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 20 * * *'
   workflow_dispatch:
     inputs:
       publishForced:
