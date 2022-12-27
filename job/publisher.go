@@ -1,10 +1,12 @@
 package job
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
+	"github.com/google/go-github/v45/github"
 	"github.com/margostino/climateline-processor/common"
 	"github.com/margostino/climateline-processor/config"
 	"github.com/margostino/climateline-processor/domain"
@@ -14,6 +16,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var twitterApi *twitter.Client
@@ -40,9 +43,13 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 
 	items, err = internal.FetchNews(category)
 
-	for _, item := range items {
-		if publishForced || item.ShouldNotifyTwitter {
-			//notifyTwitter(item)
+	lastJobRun, err := getLastJobRun()
+	log.Println(lastJobRun.String())
+	if !common.IsError(err, "when getting last job run") {
+		for _, item := range items {
+			if publishForced || item.ShouldNotifyTwitter {
+				notifyTwitter(item)
+			}
 		}
 	}
 
@@ -99,4 +106,23 @@ func newTwitterApi() *twitter.Client {
 	httpClient := config.Client(oauth1.NoContext, oauthToken)
 	client := twitter.NewClient(httpClient)
 	return client
+}
+
+func getLastJobRun() (*time.Time, error) {
+	githubClient := getGithubClient()
+
+	options := &github.ListWorkflowRunsOptions{
+		ListOptions: github.ListOptions{
+			PerPage: 1,
+		},
+	}
+
+	workflow, response, err := githubClient.Actions.ListWorkflowRunsByFileName(context.TODO(), "margostino", "climateline-processor", "publisher-job.yml", options)
+
+	if err == nil && response.StatusCode == 200 {
+		return &workflow.WorkflowRuns[0].RunStartedAt.Time, nil
+	}
+
+	return nil, err
+
 }
