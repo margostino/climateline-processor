@@ -19,10 +19,6 @@
       "memory": 1024,
       "maxDuration": 10
     },
-    "api/publisher-dispatcher.go": {
-      "memory": 1024,
-      "maxDuration": 10
-    },
     "api/cache.go": {
       "memory": 1024,
       "maxDuration": 10
