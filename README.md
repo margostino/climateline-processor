@@ -22,5 +22,7 @@ The main motivation behind is to automate and easy the news uploading with zero 
 - [ ] Create entirely new articles
 - [ ] Detect duplicated article before pushing
 - [ ] Pushing by replying
-- [ ] Detect automatically properties such as location, source, category 
+- [ ] Detect automatically properties such as location, source, category
+- [ ] Deploy only if build and tests pass
+- [ ] Isolate news fetcher API
 

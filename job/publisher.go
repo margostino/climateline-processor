@@ -43,8 +43,9 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 
 	items, err = internal.FetchNews(category)
 
-	lastJobRun, err := getLastJobRun()
-	log.Println(lastJobRun.String())
+	//lastJobRun, err := getLastJobRun()
+	//log.Println(lastJobRun.String())
+
 	if !common.IsError(err, "when getting last job run") {
 		for _, item := range items {
 			if publishForced || item.ShouldNotifyTwitter {
