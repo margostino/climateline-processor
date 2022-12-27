@@ -1,4 +1,4 @@
-name: Collector
+name: Collector Dispatcher
 
 on:
   workflow_dispatch:
