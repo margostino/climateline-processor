@@ -35,7 +35,6 @@ jobs:
         env:
           PUBLISH_FORCED: ${{ inputs.publishForced }}
           CATEGORY: ${{ inputs.category }}
-          ENVIRONMENT: ${{ inputs.environment }}
 
       - name: Publish new articles (climate)
         run: |
