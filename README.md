@@ -2,7 +2,7 @@
 
 [![Build & Test](https://github.com/margostino/climateline-processor/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/main.yml)
 [![collector-job](https://github.com/margostino/climateline-processor/actions/workflows/job-collector.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/job-collector.yml)
-[![publisher-dispatcher](https://github.com/margostino/climateline-processor/actions/workflows/job-dispatcher.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/publisher-dispatcher.yml)
+[![publisher-dispatcher](https://github.com/margostino/climateline-processor/actions/workflows/publisher-dispatcher.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/publisher-dispatcher.yml)
 
 This repo implements the job to fetch the daily news of Climate Change.  
 The job retrieve every news into the Admin Telegram Bot in order to approve, edit and push new article into [Climateline](https://climateline.vercel.app/) website.
