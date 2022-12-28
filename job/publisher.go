@@ -43,13 +43,18 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 
 	items, err = internal.FetchNews(category)
 
-	//lastJobRun, err := getLastJobRun()
-	//log.Println(lastJobRun.String())
+	lastJobRun, err := getLastJobRun()
+
+	if lastJobRun != nil && err == nil {
+		log.Printf("Last Job Run %s\n", lastJobRun.String())
+	}
 
 	if !common.IsError(err, "when getting last job run") {
 		for _, item := range items {
-			if publishForced || item.ShouldNotifyTwitter {
-				notifyTwitter(item)
+			shouldpublishbyTime := lastJobRun != nil && (item.Published == lastJobRun || item.Published.After(*lastJobRun))
+			shouldPublishByConfig := publishForced || item.ShouldNotifyTwitter
+			if shouldPublishByConfig && shouldpublishbyTime {
+				//notifyTwitter(item)
 			}
 		}
 	}
