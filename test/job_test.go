@@ -82,7 +82,7 @@ func TestRunJobNewItem(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if status := response.Code; status != http.StatusOK {
+	if status := response.Code; status != http.StatusNoContent {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}

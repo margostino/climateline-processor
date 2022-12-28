@@ -37,7 +37,9 @@ type Update struct {
 }
 
 type JobResponse struct {
-	Items int `json:"items"`
+	Items            int `json:"items"`
+	BotNotifications int `json:"bot_notifications"`
+	TwitterPosts     int `json:"twitter_posts"`
 }
 
 type BotResponse struct {

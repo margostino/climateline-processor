@@ -22,14 +22,17 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 
 	items, err := internal.FetchNews(category)
 
+	var botNotifications = 0
 	for _, item := range items {
 		if item.ShouldNotifyBot {
+			botNotifications += 1
 			internal.NotifyBot(item)
 		}
 	}
 
 	response := domain.JobResponse{
-		Items: len(items),
+		Items:            len(items),
+		BotNotifications: botNotifications,
 	}
 
 	jsonResp, err := json.Marshal(response)
@@ -37,7 +40,12 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 		(*writer).WriteHeader(http.StatusNotFound)
 		fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
 	} else {
-		(*writer).WriteHeader(http.StatusNotFound)
+		if botNotifications > 0 {
+			(*writer).WriteHeader(http.StatusOK)
+		} else {
+			(*writer).WriteHeader(http.StatusNoContent)
+		}
+		
 		(*writer).Write(jsonResp)
 	}
 }
