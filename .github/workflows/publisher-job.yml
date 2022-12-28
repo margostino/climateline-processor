@@ -1,9 +1,9 @@
 name: Publisher Job
 on:
   schedule:
+    - cron: '0 22 * * *'
+    - cron: '0 21 * * *'
     - cron: '0 20 * * *'
-    - cron: '*/5 * * * *'
-    - cron: '*/10 * * * *'
   workflow_dispatch:
     inputs:
       publishForced:
@@ -26,26 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Publish new articles (cron 1)
-        run: |
-          curl --request GET \
-          --url "https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED" \
-          --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}'
-        if: github.event.schedule == '*/5 * * * *'
-        env:
-          PUBLISH_FORCED: false
-          CATEGORY: climate
-
-      - name: Publish new articles (cron 2)
-        run: |
-          curl --request GET \
-          --url "https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED" \
-          --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}'
-        if: github.event.schedule == '*/10 * * * *'
-        env:
-          PUBLISH_FORCED: false
-          CATEGORY: air
-
       - name: Publish new articles (dispatcher)
         run: |
           curl --request GET \
@@ -56,4 +36,34 @@ jobs:
           PUBLISH_FORCED: ${{ inputs.publishForced }}
           CATEGORY: ${{ inputs.category }}
           ENVIRONMENT: ${{ inputs.environment }}
+
+      - name: Publish new articles (climate)
+        run: |
+          curl --request GET \
+          --url "https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED" \
+          --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}'
+        if: github.event.schedule == '0 22 * * *'
+        env:
+          PUBLISH_FORCED: false
+          CATEGORY: climate
+
+      - name: Publish new articles (cron air)
+        run: |
+          curl --request GET \
+          --url "https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED" \
+          --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}'
+        if: github.event.schedule == '0 21 * * *'
+        env:
+          PUBLISH_FORCED: false
+          CATEGORY: air
+
+      - name: Publish new articles (cron air)
+        run: |
+          curl --request GET \
+          --url "https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED" \
+          --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}'
+        if: github.event.schedule == '0 20 * * *'
+        env:
+          PUBLISH_FORCED: false
+          CATEGORY: deforestation
 

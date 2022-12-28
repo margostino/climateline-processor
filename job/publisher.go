@@ -51,10 +51,10 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 
 	if !common.IsError(err, "when getting last job run") {
 		for _, item := range items {
-			shouldpublishbyTime := lastJobRun != nil && (item.Published == lastJobRun || item.Published.After(*lastJobRun))
+			shouldPublishByTime := lastJobRun != nil && (item.Published == lastJobRun || item.Published.After(*lastJobRun))
 			shouldPublishByConfig := publishForced || item.ShouldNotifyTwitter
-			if shouldPublishByConfig && shouldpublishbyTime {
-				//notifyTwitter(item)
+			if shouldPublishByConfig && shouldPublishByTime {
+				notifyTwitter(item)
 			}
 		}
 	}
