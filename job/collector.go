@@ -6,7 +6,9 @@ import (
 	"github.com/margostino/climateline-processor/config"
 	"github.com/margostino/climateline-processor/domain"
 	"github.com/margostino/climateline-processor/internal"
+	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -14,17 +16,25 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 	var items = make([]*domain.Item, 0)
 	twitterApi = newTwitterApi()
 
+	collectForced, err := strconv.ParseBool(request.URL.Query().Get("collect_forced"))
+	if err != nil {
+		collectForced = false
+	}
 	category := strings.ToLower(request.URL.Query().Get("category"))
 	if category == "" {
 		category = "*"
 	}
+
+	log.Printf("Category: %s\n", category)
+	log.Printf("Collect Forced: %t\n", collectForced)
+
 	urls = config.GetUrls(category)
 
-	items, err := internal.FetchNews(category)
+	items, err = internal.FetchNews(category)
 
 	var botNotifications = 0
 	for _, item := range items {
-		if item.ShouldNotifyBot {
+		if collectForced || item.ShouldNotifyBot {
 			botNotifications += 1
 			internal.NotifyBot(item)
 		}
@@ -45,7 +55,7 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 		} else {
 			(*writer).WriteHeader(http.StatusNoContent)
 		}
-		
+
 		(*writer).Write(jsonResp)
 	}
 }
