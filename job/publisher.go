@@ -24,6 +24,7 @@ var bitlyDomain = "bit.ly"
 
 func Publish(request *http.Request, writer *http.ResponseWriter) {
 	var items = make([]*domain.Item, 0)
+	var twitterPosts = 0
 
 	twitterApi = newTwitterApi()
 
@@ -44,7 +45,7 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 	items, err = internal.FetchNews(category, publishForced)
 
 	if len(items) > 0 {
-		lastJobRun, err := getLastJobRun()
+		lastJobRun, err := getLastJobRun(category)
 		if lastJobRun != nil && err == nil {
 			log.Printf("Last Job Run %s\n", lastJobRun.String())
 		}
@@ -54,14 +55,19 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 				shouldPublishByTime := lastJobRun != nil && (item.Published == lastJobRun || item.Published.After(*lastJobRun))
 				shouldPublishByConfig := publishForced || item.ShouldNotifyTwitter
 				if shouldPublishByConfig && shouldPublishByTime {
-					notifyTwitter(item)
+					_, err := notifyTwitter(item)
+					if !common.IsError(err, "when posting tweet") {
+						twitterPosts += 1
+					}
+
 				}
 			}
 		}
 	}
 
 	response := domain.JobResponse{
-		Items: len(items),
+		Items:        len(items),
+		TwitterPosts: twitterPosts,
 	}
 
 	jsonResp, err := json.Marshal(response)
@@ -69,12 +75,16 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 		(*writer).WriteHeader(http.StatusNotFound)
 		fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
 	} else {
-		(*writer).WriteHeader(http.StatusOK)
+		if twitterPosts > 0 {
+			(*writer).WriteHeader(http.StatusOK)
+		} else {
+			(*writer).WriteHeader(http.StatusNoContent)
+		}
 		(*writer).Write(jsonResp)
 	}
 }
 
-func notifyTwitter(item *domain.Item) {
+func notifyTwitter(item *domain.Item) (*http.Response, error) {
 	var tweet string
 	//shorterLink := urlshortener.Shorten(item.Link)
 	shorterLink := item.Link
@@ -93,6 +103,8 @@ func notifyTwitter(item *domain.Item) {
 	if err != nil && resp.StatusCode == 200 {
 		log.Println("Tweet created")
 	}
+
+	return resp, err
 }
 
 func sanitizeTweet(value string) string {
@@ -115,7 +127,7 @@ func newTwitterApi() *twitter.Client {
 	return client
 }
 
-func getLastJobRun() (*time.Time, error) {
+func getLastJobRun(category string) (*time.Time, error) {
 	githubClient := getGithubClient()
 
 	options := &github.ListWorkflowRunsOptions{
@@ -125,7 +137,8 @@ func getLastJobRun() (*time.Time, error) {
 		},
 	}
 
-	workflow, response, err := githubClient.Actions.ListWorkflowRunsByFileName(context.TODO(), "margostino", "climateline-processor", "publisher-job.yml", options)
+	workflowFilename := fmt.Sprintf("publisher-%s-job.yml", category)
+	workflow, response, err := githubClient.Actions.ListWorkflowRunsByFileName(context.TODO(), "margostino", "climateline-processor", workflowFilename, options)
 
 	if err == nil && response.StatusCode == 200 {
 		return &workflow.WorkflowRuns[0].UpdatedAt.Time, nil
