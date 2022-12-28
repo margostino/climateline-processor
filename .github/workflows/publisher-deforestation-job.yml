@@ -1,7 +1,10 @@
 name: Publisher Job (deforestation)
 on:
   schedule:
-    - cron: '45 21 * * *'
+    - cron: '30 11 * * *'
+    - cron: '30 17 * * *'
+    - cron: '30 23 * * *'
+    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       publishForced:

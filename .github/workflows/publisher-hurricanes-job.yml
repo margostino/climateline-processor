@@ -1,7 +1,8 @@
 name: Publisher Job (hurricanes)
 on:
   schedule:
-    - cron: '0 22 * * *'
+    - cron: '20 21 * * *'
+    - cron: '45 3 * * *'
   workflow_dispatch:
     inputs:
       publishForced:

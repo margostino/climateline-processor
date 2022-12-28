@@ -1,7 +1,8 @@
 name: Publisher Job (heatwave)
 on:
   schedule:
-    - cron: '0 20 * * *'
+    - cron: '15 22 * * *'
+    - cron: '15 3 * * *'
   workflow_dispatch:
     inputs:
       publishForced:

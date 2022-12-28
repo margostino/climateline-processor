@@ -1,7 +1,9 @@
 name: Publisher Job (warming)
 on:
   schedule:
-    - cron: '0 21 * * *'
+    - cron: '0 18 * * *'
+    - cron: '0 23 * * *'
+    - cron: '0 4 * * *'
   workflow_dispatch:
     inputs:
       publishForced:

@@ -1,7 +1,10 @@
 name: Publisher Job (climate)
 on:
   schedule:
+    - cron: '0 11 * * *'
+    - cron: '0 17 * * *'
     - cron: '0 23 * * *'
+    - cron: '0 2 * * *'
   workflow_dispatch:
     inputs:
       publishForced:

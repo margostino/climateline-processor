@@ -1,7 +1,8 @@
 name: Publisher Job (oceans)
 on:
   schedule:
-    - cron: '0 20 * * *'
+    - cron: '30 22 * * *'
+    - cron: '20 4 * * *'
   workflow_dispatch:
     inputs:
       publishForced:

@@ -1,7 +1,8 @@
 name: Publisher Job (drought)
 on:
   schedule:
-    - cron: '30 23 * * *'
+    - cron: '0 21 * * *'
+    - cron: '30 3 * * *'
   workflow_dispatch:
     inputs:
       publishForced:
