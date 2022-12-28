@@ -41,7 +41,7 @@ jobs:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
 
-      - name: Fetch new articles (cron)
+      - name: Fetch new articles (schedule)
         run: |
           CODE=`curl --write-out '%{http_code}' \
           --silent \
