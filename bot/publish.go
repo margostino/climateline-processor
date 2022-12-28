@@ -1,8 +1,9 @@
 package bot
 
 import (
+	"context"
 	"fmt"
-	"github.com/margostino/climateline-processor/internal"
+	"github.com/google/go-github/v45/github"
 	"strings"
 )
 
@@ -17,13 +18,29 @@ func Publish(input string) string {
 		category = "*"
 	}
 
-	response, err := internal.PublishNews(category, true)
+	response, err := dispatchPublisherBy(category)
 
 	if err != nil {
-		reply = fmt.Sprintf("🔴 Fetcher failed: %s", err.Error())
+		reply = fmt.Sprintf("🔴 Publisher failed: %s", err.Error())
 	} else {
-		reply = fmt.Sprintf("✅ Completed successfully (%d items published)", response.Items)
+		reply = fmt.Sprintf("✅ Completed successfully (status %d)", response.StatusCode)
 	}
 
 	return reply
+}
+
+func dispatchPublisherBy(category string) (*github.Response, error) {
+	githubClient := getGithubClient()
+
+	workflowFilename := fmt.Sprintf("publisher-%s-job.yml", category)
+	inputs := map[string]interface{}{
+		"category":       category,
+		"publish_forced": "true",
+	}
+	eventRequest := github.CreateWorkflowDispatchEventRequest{
+		Inputs: inputs,
+	}
+
+	return githubClient.Actions.CreateWorkflowDispatchEventByFileName(context.TODO(), "margostino", "climateline-processor", workflowFilename, eventRequest)
+
 }
