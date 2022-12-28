@@ -57,7 +57,7 @@ jobs:
           PUBLISH_FORCED: false
           CATEGORY: air
 
-      - name: Publish new articles (cron air)
+      - name: Publish new articles (cron deforestation)
         run: |
           curl --request GET \
           --url "https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED" \
