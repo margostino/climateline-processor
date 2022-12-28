@@ -3,8 +3,7 @@ on:
   schedule:
     - cron: '15 11 * * *'
     - cron: '15 17 * * *'
-    - cron: '15 23 * * *'
-    - cron: '15 23 * * *'
+    - cron: '15 23 * * *'    
     - cron: '0 1 * * *'
   workflow_dispatch:
     inputs:
