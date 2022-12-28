@@ -9,9 +9,9 @@ import (
 	"os"
 )
 
-func FetchNews(category string) ([]*domain.Item, error) {
+func FetchNews(category string, collectForced bool) ([]*domain.Item, error) {
 	client := &http.Client{}
-	url := fmt.Sprintf("%s?category=%s", news.GetBaseNewsUrl(), category)
+	url := fmt.Sprintf("%s?category=%s&collect_forced=%t", news.GetBaseNewsUrl(), category, collectForced)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CLIMATELINE_JOB_SECRET")))
 	response, err := client.Do(request)

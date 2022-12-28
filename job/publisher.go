@@ -41,20 +41,21 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 
 	urls = config.GetUrls(category)
 
-	items, err = internal.FetchNews(category)
+	items, err = internal.FetchNews(category, publishForced)
 
-	lastJobRun, err := getLastJobRun()
+	if len(items) > 0 {
+		lastJobRun, err := getLastJobRun()
+		if lastJobRun != nil && err == nil {
+			log.Printf("Last Job Run %s\n", lastJobRun.String())
+		}
 
-	if lastJobRun != nil && err == nil {
-		log.Printf("Last Job Run %s\n", lastJobRun.String())
-	}
-
-	if !common.IsError(err, "when getting last job run") {
-		for _, item := range items {
-			shouldPublishByTime := lastJobRun != nil && (item.Published == lastJobRun || item.Published.After(*lastJobRun))
-			shouldPublishByConfig := publishForced || item.ShouldNotifyTwitter
-			if shouldPublishByConfig && shouldPublishByTime {
-				notifyTwitter(item)
+		if !common.IsError(err, "when getting last job run") {
+			for _, item := range items {
+				shouldPublishByTime := lastJobRun != nil && (item.Published == lastJobRun || item.Published.After(*lastJobRun))
+				shouldPublishByConfig := publishForced || item.ShouldNotifyTwitter
+				if shouldPublishByConfig && shouldPublishByTime {
+					notifyTwitter(item)
+				}
 			}
 		}
 	}
@@ -118,6 +119,7 @@ func getLastJobRun() (*time.Time, error) {
 	githubClient := getGithubClient()
 
 	options := &github.ListWorkflowRunsOptions{
+		Status: "success",
 		ListOptions: github.ListOptions{
 			PerPage: 1,
 		},

@@ -17,7 +17,7 @@ func Fetch(input string) string {
 		category = "*"
 	}
 
-	items, err := internal.FetchNews(category)
+	items, err := internal.FetchNews(category, true)
 
 	if !common.IsError(err, "when fetching news") {
 		for _, item := range items {
