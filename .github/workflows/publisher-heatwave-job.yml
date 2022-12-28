@@ -39,7 +39,7 @@ jobs:
           fi
         if: ${{ github.event_name == 'schedule' }}
         env:
-          PUBLISH_FORCED: false
+          PUBLISH_FORCED: true
           CATEGORY: heatwave
 
       - name: Publish new articles (dispatch)
