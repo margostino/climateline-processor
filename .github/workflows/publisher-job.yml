@@ -51,7 +51,7 @@ jobs:
           curl --request GET \
           --url "https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED" \
           --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}'
-        if: github.event != 'schedule'
+        if: ${{ github.event_name != 'schedule' }}
         env:
           PUBLISH_FORCED: ${{ inputs.publishForced }}
           CATEGORY: ${{ inputs.category }}
