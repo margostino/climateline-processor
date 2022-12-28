@@ -128,7 +128,7 @@ func getLastJobRun() (*time.Time, error) {
 	workflow, response, err := githubClient.Actions.ListWorkflowRunsByFileName(context.TODO(), "margostino", "climateline-processor", "publisher-job.yml", options)
 
 	if err == nil && response.StatusCode == 200 {
-		return &workflow.WorkflowRuns[0].RunStartedAt.Time, nil
+		return &workflow.WorkflowRuns[0].UpdatedAt.Time, nil
 	}
 
 	return nil, err
