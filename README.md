@@ -1,7 +1,7 @@
 # climateline-processor
 
 [![Build & Test](https://github.com/margostino/climateline-processor/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/main.yml)
-[![collector-job](https://github.com/margostino/climateline-processor/actions/workflows/publisher-dispatcher.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/publisher-dispatcher.yml)
+[![collector-job](https://github.com/margostino/climateline-processor/actions/workflows/collector-job.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/collector-job.yml)
 [![publisher-dispatcher](https://github.com/margostino/climateline-processor/actions/workflows/publisher-dispatcher.yml/badge.svg?branch=master)](https://github.com/margostino/climateline-processor/actions/workflows/publisher-dispatcher.yml)
 
 This repo implements the job to fetch the daily news of Climate Change.  
