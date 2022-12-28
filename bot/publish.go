@@ -34,10 +34,12 @@ func dispatchPublisherBy(category string) (*github.Response, error) {
 
 	workflowFilename := fmt.Sprintf("publisher-%s-job.yml", category)
 	inputs := map[string]interface{}{
-		"category":       category,
-		"publish_forced": "true",
+		"category":      category,
+		"publishForced": "true",
+		"environment":   "production",
 	}
 	eventRequest := github.CreateWorkflowDispatchEventRequest{
+		Ref:    "master",
 		Inputs: inputs,
 	}
 
