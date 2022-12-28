@@ -1,4 +1,4 @@
-name: Publisher Job (dispatcher)
+name: Publisher Dispatcher
 on:
   workflow_dispatch:
     inputs:
