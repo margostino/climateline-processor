@@ -1,0 +1,28 @@
+name: Call Collector Workflow
+
+on:
+  workflow_call:
+    inputs:
+      statusCode:
+        description: 'status code from publisher job'
+        type: int
+        required: true
+    outputs:
+      status_code:
+        description: "Status Code from Climateline API"
+        value: ${{jobs.dispatcher.outputs.status_code}}
+
+jobs:
+  checker-success:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checker success
+        run: echo success
+        if: ${{ inputs.statusCode == 200 }}
+
+  checker-no-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checker no-content
+        run: echo success
+        if: ${{ inputs.statusCode == 204 }}

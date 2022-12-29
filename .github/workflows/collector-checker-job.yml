@@ -31,4 +31,4 @@ jobs:
     runs-on: ubuntu-latest
     needs: caller
     steps:
-      - run: echo sarlanfa ${{ needs.caller.outputs.status_code }}
+      - run: echo ${{ needs.caller.outputs.status_code }}
