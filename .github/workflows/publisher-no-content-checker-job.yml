@@ -1,4 +1,4 @@
-name: Publisher Checker Workflow
+name: Publisher No-Content Checker Workflow
 
 on:
   workflow_call:
@@ -13,13 +13,6 @@ on:
         value: ${{jobs.dispatcher.outputs.status_code}}
 
 jobs:
-  checker-success:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checker success
-        run: echo success
-        if: ${{ inputs.statusCode == '200' }}
-
   checker-no-content:
     runs-on: ubuntu-latest
     steps:
