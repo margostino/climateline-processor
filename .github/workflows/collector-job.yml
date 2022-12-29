@@ -6,12 +6,12 @@ on:
     inputs:
       collectForced:
         description: 'Flag to force collection regardless the configuration'
-        type: collect_forced
+        type: boolean
         default: false
         required: true
       category:
         description: 'News Category to filter out'
-        type: category
+        type: string
         required: true
         default: '*'
       environment:
@@ -22,12 +22,12 @@ on:
     inputs:
       collectForced:
         description: 'Flag to force collection regardless the configuration'
-        type: collect_forced
+        type: boolean
         default: false
         required: true
       category:
         description: 'News Category to filter out'
-        type: category
+        type: string
         required: true
         default: '*'
     outputs:
