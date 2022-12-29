@@ -52,9 +52,9 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 	} else {
 		if botNotifications > 0 {
 			(*writer).WriteHeader(http.StatusOK)
+			(*writer).Write(jsonResp)
 		} else {
 			(*writer).WriteHeader(http.StatusNoContent)
 		}
-		(*writer).Write(jsonResp)
 	}
 }
