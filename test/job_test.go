@@ -90,7 +90,7 @@ func TestRunJobNewItem(t *testing.T) {
 	var jobResponse domain.JobResponse
 	err = json.NewDecoder(response.Body).Decode(&jobResponse)
 
-	if jobResponse.Items != 1 {
-		t.Errorf("handler returned unexpected response size: got %v want %v", jobResponse.Items, 1)
+	if jobResponse.Items != 0 {
+		t.Errorf("handler returned unexpected response size: got %v want %v", jobResponse.Items, 0)
 	}
 }
