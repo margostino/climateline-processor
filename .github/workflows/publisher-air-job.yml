@@ -65,7 +65,7 @@ jobs:
 
   checker-debugger:
     runs-on: ubuntu-latest
-    needs: dispatcher
+    needs: publisher
     if: ${{ needs.dispatcher.outputs.status_code == '404' }}
     steps:
       - run: echo success
