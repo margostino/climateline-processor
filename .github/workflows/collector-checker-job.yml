@@ -1,18 +1,30 @@
-name: Collector Checker Job
+name: Call a reusable workflow and use its outputs
+
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      climateresult:
+      collectForced:
+        description: 'Flag to force collection regardless the configuration'
+        type: collect_forced
+        default: false
+        required: true
+      category:
+        description: 'News Category to filter out'
+        type: category
+        default: '*'
+        required: true
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        default: 'production'
         required: false
-        type: string
 
 jobs:
+  job1:
+    uses: margostino/climateline-processor/.github/workflows/collector-job.yml@master
 
-  reusable_workflow_job:
+  job2:
     runs-on: ubuntu-latest
-    environment: production
+    needs: job1
     steps:
-      - name: Show result
-        run: echo $RESULTS
-        env:
-          RESULTS: ${{ inputs.climateresult }}
+      - run: echo ${{ needs.job1.outputs.publisherResult }}

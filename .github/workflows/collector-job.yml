@@ -62,10 +62,6 @@ jobs:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
 
-  call-workflow-passing-data:
-    needs: dispatcher1
-    uses: margostino/climateline-processor/.github/workflows/collector-checker-job.yml@master
-
   schedule:
     runs-on: ubuntu-latest
     steps:
