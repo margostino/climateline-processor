@@ -36,7 +36,7 @@ jobs:
           if [ $CODE != "200" ]; then 
             exit 1
           fi
-        if: ${{ github.event_name != 'schedule' }}
+        if: ${{ github.event_name != 'xschedule' }}
         env:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
@@ -48,7 +48,7 @@ jobs:
       - name: Fetch new articles (dispatcher)
         id: dispatcher
         run: echo $GITHUB_OUTPUT
-        if: ${{ github.event_name != 'schedule' }}
+        if: ${{ github.event_name != 'xschedule' }}
         env:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
