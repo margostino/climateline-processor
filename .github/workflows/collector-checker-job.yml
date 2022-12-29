@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - runs-on: ubuntu-latest
+      - name: Show result
         run: echo $RESULTS
         env:
           RESULTS: ${{ inputs.climateresult }}
