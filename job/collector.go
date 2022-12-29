@@ -55,6 +55,7 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 			(*writer).Write(jsonResp)
 		} else {
 			(*writer).WriteHeader(http.StatusNoContent)
+			(*writer).Header().Set("Content-Length", "0")
 		}
 	}
 }
