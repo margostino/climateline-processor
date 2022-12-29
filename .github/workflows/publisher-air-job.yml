@@ -64,5 +64,5 @@ jobs:
     uses: margostino/climateline-processor/.github/workflows/publisher-checker-job.yml@master
     needs: publisher
     with:
-      statusCode: ${{ jobs.publisher.outputs.statusCode }}
+      statusCode: ${{ needs.publisher.outputs.statusCode }}
     secrets: inherit
