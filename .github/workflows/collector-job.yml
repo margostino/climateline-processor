@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: dispatcher
     steps:
-      - name: Fetch new articles (dispatcher)
+      - name: checker success
         run: echo success
         if: ${{ needs.dispatcher.outputs.status_code == '200' }}
         env:
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: dispatcher
     steps:
-      - name: Fetch new articles (dispatcher)
+      - name: checker no-content
         run: echo no-content
         if: ${{ needs.dispatcher.outputs.status_code == '204' }}
         env:
