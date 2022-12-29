@@ -20,12 +20,11 @@ on:
         required: false
 
 jobs:
-  job:
+  dispatcher1:
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.dispatcher.outputs.code }}
+      code: ${{ steps.dispatcher.outputs.code }}
     steps:
-
       - name: Fetch new articles (dispatcher)
         id: dispatcher
         run: |
@@ -46,6 +45,22 @@ jobs:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
 
+  dispatcher2:
+    runs-on: ubuntu-latest
+    needs: dispatcher1
+    steps:
+      - name: Fetch new articles (dispatcher)
+        id: dispatcher
+        run: echo $GITHUB_OUTPUT
+        if: ${{ github.event_name != 'schedule' }}
+        env:
+          COLLECT_FORCED: ${{ inputs.collectForced }}
+          CATEGORY: ${{ inputs.category }}
+
+  schedule:
+    runs-on: ubuntu-latest
+    needs: dispatcher1
+    steps:
       - name: Fetch new articles (schedule)
         run: |
           CODE=`curl --write-out '%{http_code}' \
