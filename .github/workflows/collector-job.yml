@@ -36,6 +36,7 @@ jobs:
           --header 'content-type: application/json' \
           --url "https://climateline-processor.vercel.app/api/collector-job?category=$CATEGORY&collect_forced=$COLLECT_FORCED"`                              
           echo "test=$CODE" >> $GITHUB_OUTPUT
+          echo "::error line=1::sarlanga"
           if [ $CODE != "200" ]; then 
             exit 1
           fi
