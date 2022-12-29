@@ -22,7 +22,8 @@ jobs:
 
   checker-no-content:
     runs-on: ubuntu-latest
+    if: ${{ inputs.statusCode == '204' }}
     steps:
       - name: checker no-content
-        run: echo success
+        run: echo no-content
         if: ${{ inputs.statusCode == '204' }}
