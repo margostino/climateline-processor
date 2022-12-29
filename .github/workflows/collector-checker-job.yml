@@ -25,6 +25,7 @@ jobs:
     with:
       collectForced: ${{ inputs.collectForced }}
       category: ${{ inputs.category }}
+    secrets: ${{ secrets.CLIMATELINE_JOB_SECRET }}
 
   checker:
     runs-on: ubuntu-latest
