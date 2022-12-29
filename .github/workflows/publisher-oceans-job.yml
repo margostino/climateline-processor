@@ -21,7 +21,7 @@ on:
         required: false
 
 jobs:
-  cron:
+  job:
     runs-on: ubuntu-latest
     steps:
 
