@@ -53,12 +53,14 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 		(*writer).WriteHeader(http.StatusNotFound)
 		fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
 	} else {
+		log.Println("no errors while marshalling")
 		if botNotifications > 0 {
 			(*writer).WriteHeader(http.StatusOK)
 		} else {
 			(*writer).WriteHeader(http.StatusNoContent)
 		}
-
+		log.Println("writting response")
 		(*writer).Write(jsonResp)
 	}
+	log.Printf("returning response %d", botNotifications)
 }
