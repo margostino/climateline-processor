@@ -13,9 +13,8 @@ on:
         value: ${{jobs.dispatcher.outputs.status_code}}
 
 jobs:
-  checker-no-content:
+  checker:
     runs-on: ubuntu-latest
     steps:
-      - name: checker no-content
-        run: echo no-content
+      - run: echo no-content
         if: ${{ inputs.statusCode == '204' }}

@@ -13,9 +13,8 @@ on:
         value: ${{jobs.dispatcher.outputs.status_code}}
 
 jobs:
-  checker-success:
+  checker:
     runs-on: ubuntu-latest
     steps:
-      - name: checker success
-        run: echo success
+      - run: echo success
         if: ${{ inputs.statusCode == '200' }}
