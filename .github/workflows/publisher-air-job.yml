@@ -60,9 +60,18 @@ jobs:
           PUBLISH_FORCED: ${{ inputs.publishForced }}
           CATEGORY: ${{ inputs.category }}
 
-  checker:
-    uses: margostino/climateline-processor/.github/workflows/publisher-checker-job.yml@master
+  checker-no-content:
+    uses: margostino/climateline-processor/.github/workflows/publisher-no-content-checker-job.yml@master
     needs: publisher
+    if: ${{ inputs.statusCode == '204' }}
+    with:
+      statusCode: ${{ needs.publisher.outputs.statusCode }}
+    secrets: inherit
+
+  checker-success:
+    uses: margostino/climateline-processor/.github/workflows/publisher-success-checker-job.yml@master
+    needs: publisher
+    if: ${{ inputs.statusCode == '200' }}
     with:
       statusCode: ${{ needs.publisher.outputs.statusCode }}
     secrets: inherit
