@@ -77,10 +77,11 @@ func Publish(request *http.Request, writer *http.ResponseWriter) {
 	} else {
 		if twitterPosts > 0 {
 			(*writer).WriteHeader(http.StatusOK)
+			(*writer).Write(jsonResp)
 		} else {
 			(*writer).WriteHeader(http.StatusNoContent)
+			(*writer).Header().Set("Content-Length", "0")
 		}
-		(*writer).Write(jsonResp)
 	}
 }
 
