@@ -5,7 +5,7 @@ on:
     inputs:
       statusCode:
         description: 'status code from publisher job'
-        type: int
+        type: string
         required: true
     outputs:
       status_code:
@@ -18,11 +18,11 @@ jobs:
     steps:
       - name: checker success
         run: echo success
-        if: ${{ inputs.statusCode == 200 }}
+        if: ${{ inputs.statusCode == '200' }}
 
   checker-no-content:
     runs-on: ubuntu-latest
     steps:
       - name: checker no-content
         run: echo success
-        if: ${{ inputs.statusCode == 204 }}
+        if: ${{ inputs.statusCode == '204' }}
