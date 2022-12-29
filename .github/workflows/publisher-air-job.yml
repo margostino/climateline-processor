@@ -60,36 +60,13 @@ jobs:
         env:
           PUBLISH_FORCED: ${{ inputs.publishForced }}
           CATEGORY: ${{ inputs.category }}
-      - name: debugging-steps
-        run: |
-          echo "debugging: $DEB"
-        env:
-          DEB: ${{ steps.dispatcher.outputs.status_code }}
-
-  checker-debugger:
-    runs-on: ubuntu-latest
-    needs: publisher
-    if: ${{ needs.dispatcher.outputs.status_code == '404' }}
-    steps:
-      - run: echo success
-        if: ${{ needs.dispatcher.outputs.status_code == '404' }}
-        env:
-          COLLECT_FORCED: ${{ inputs.collectForced }}
-          CATEGORY: ${{ inputs.category }}
-          STATUS: ${{ needs.dispatcher.outputs.status_code }}
 
   checker-no-content:
     uses: margostino/climateline-processor/.github/workflows/publisher-no-content-checker-job.yml@master
     needs: publisher
     if: ${{ needs.publisher.outputs.statusCode == '204' }}
-    with:
-      statusCode: ${{ needs.publisher.outputs.statusCode }}
-    secrets: inherit
 
   checker-success:
     uses: margostino/climateline-processor/.github/workflows/publisher-success-checker-job.yml@master
     needs: publisher
     if: ${{ needs.publisher.outputs.statusCode == '200' }}
-    with:
-      statusCode: ${{ needs.publisher.outputs.statusCode }}
-    secrets: inherit

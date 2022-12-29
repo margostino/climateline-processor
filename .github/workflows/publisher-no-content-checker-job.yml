@@ -2,19 +2,9 @@ name: Publisher No-Content Checker Workflow
 
 on:
   workflow_call:
-    inputs:
-      statusCode:
-        description: 'status code from publisher job'
-        type: string
-        required: true
-    outputs:
-      status_code:
-        description: "Status Code from Climateline API"
-        value: ${{jobs.dispatcher.outputs.status_code}}
 
 jobs:
   checker:
     runs-on: ubuntu-latest
     steps:
       - run: echo no-content
-        if: ${{ inputs.statusCode == '204' }}
