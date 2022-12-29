@@ -53,7 +53,7 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 		if botNotifications > 0 {
 			(*writer).WriteHeader(http.StatusOK)
 		} else {
-			(*writer).WriteHeader(http.StatusNotFound)
+			(*writer).WriteHeader(http.StatusNoContent)
 		}
 		(*writer).Write(jsonResp)
 	}
