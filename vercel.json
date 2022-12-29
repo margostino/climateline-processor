@@ -1,7 +1,7 @@
 {
   "github": {
     "silent": true,
-    "enabled": false
+    "enabled": true
   },
   "functions": {
     "api/bot.go": {
