@@ -20,14 +20,14 @@ on:
         required: false
 
 jobs:
-  job1:
+  caller:
     uses: margostino/climateline-processor/.github/workflows/collector-job.yml@master
     with:
       collectForced: ${{ inputs.collectForced }}
       category: ${{ inputs.category }}
 
-  job2:
+  checker:
     runs-on: ubuntu-latest
-    needs: job1
+    needs: caller
     steps:
-      - run: echo ${{ needs.job1.outputs.publisherResult }}
+      - run: echo ${{ needs.caller.outputs.status_code }} ${{ needs.caller.outputs.status_code.value }}
