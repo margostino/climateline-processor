@@ -30,6 +30,7 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 
 	urls = config.GetUrls(category)
 
+	log.Println("fetching news")
 	items, err = internal.FetchNews(category, collectForced)
 
 	var botNotifications = 0
@@ -40,12 +41,14 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 		}
 	}
 
+	log.Println("preparing response")
 	response := domain.JobResponse{
 		Items:            len(items),
 		BotNotifications: botNotifications,
 	}
 
 	jsonResp, err := json.Marshal(response)
+	log.Println("setting status")
 	if err != nil {
 		(*writer).WriteHeader(http.StatusNotFound)
 		fmt.Printf("Error happened in JSON marshal. Err: %s\n", err)
