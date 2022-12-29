@@ -22,6 +22,9 @@ on:
 jobs:
   job1:
     uses: margostino/climateline-processor/.github/workflows/collector-job.yml@master
+    with:
+      collectForced: ${{ inputs.collectForced }}
+      category: ${{ inputs.category }}
 
   job2:
     runs-on: ubuntu-latest
