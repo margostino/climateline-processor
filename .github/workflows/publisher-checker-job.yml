@@ -1,4 +1,4 @@
-name: Call Collector Workflow
+name: Publisher Checker Workflow
 
 on:
   workflow_call:
