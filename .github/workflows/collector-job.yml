@@ -19,11 +19,12 @@ on:
         type: environment
         required: false
     outputs:
-      workflow_output1:
+      workflow_dispatch:
         description: "The first job output"
-        value: "sa sa sarlanga" #"${{ jobs.dispatcher1.outputs.output1 }}
+        value: ${{ jobs.dispatcher1.outputs.output1 }}
 
 jobs:
+
   dispatcher1:
     runs-on: ubuntu-latest
     outputs:
