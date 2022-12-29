@@ -44,7 +44,8 @@ jobs:
     steps:
       - name: Fetch new articles (dispatcher)
         id: dispatcher
-        run: |
+        run: echo something
+#        run: |
 #          CODE=`curl --write-out '%{http_code}' \
 #          --silent \
 #          --output /dev/null \
@@ -54,7 +55,7 @@ jobs:
 #          --url "https://climateline-processor.vercel.app/api/collector-job?category=$CATEGORY&collect_forced=$COLLECT_FORCED"`
 #          echo "sarlanga"
 #          echo "status_code=$CODE" >> $GITHUB_OUTPUT
-          echo "testingtesting"
+#          echo "testingtesting"
         if: ${{ github.event_name != 'schedule' }}
         env:
           COLLECT_FORCED: ${{ inputs.collectForced }}
