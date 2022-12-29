@@ -61,8 +61,10 @@ jobs:
           PUBLISH_FORCED: ${{ inputs.publishForced }}
           CATEGORY: ${{ inputs.category }}
       - name: debugging-steps
-        run: echo debugging
-        if: ${{ steps.dispatcher.outputs.status_code == 204 }}
+        run: |
+          echo "debugging: $DEB"
+        env:
+          DEB: ${{ steps.dispatcher.outputs.status_code }}
 
   checker-debugger:
     runs-on: ubuntu-latest
