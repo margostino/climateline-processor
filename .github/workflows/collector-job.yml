@@ -26,9 +26,6 @@ on:
 
 jobs:
 
-  call-workflow-passing-data:
-    uses: margostino/climateline-processor/.github/workflows/collector-job.yml@master
-
   dispatcher1:
     runs-on: ubuntu-latest
     outputs:
@@ -64,6 +61,10 @@ jobs:
         env:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
+
+  call-workflow-passing-data:
+    needs: dispatcher1
+    uses: margostino/climateline-processor/.github/workflows/collector-checker-job.yml@master
 
   schedule:
     runs-on: ubuntu-latest
