@@ -26,6 +26,9 @@ on:
 
 jobs:
 
+  call-workflow-passing-data:
+    uses: margostino/climate-processor/.github/workflows/collector-job.yml@main
+
   dispatcher1:
     runs-on: ubuntu-latest
     outputs:
