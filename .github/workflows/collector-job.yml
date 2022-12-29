@@ -21,7 +21,7 @@ on:
     outputs:
       workflow_dispatch:
         description: "The first job output"
-        value: ${{ jobs.dispatcher1.outputs.output1 }}
+        value: ${{jobs.dispatcher1.outputs.output1}}
 
 jobs:
 
