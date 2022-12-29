@@ -61,7 +61,7 @@ jobs:
           CATEGORY: ${{ inputs.category }}
       - name: debugging-steps
         run: echo debugging
-        if: ${{ steps.dispatcher.outputs.status_code == '404' }}
+        if: ${{ steps.dispatcher.outputs.status_code == '204' }}
 
   checker-debugger:
     runs-on: ubuntu-latest
