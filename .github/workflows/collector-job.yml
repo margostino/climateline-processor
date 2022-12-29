@@ -18,6 +18,10 @@ on:
         description: 'Environment to run tests against'
         type: environment
         required: false
+    outputs:
+      workflow_output1:
+        description: "The first job output"
+        value: ${{ jobs.dispatcher1.outputs.output1 }}
 
 jobs:
   dispatcher1:
