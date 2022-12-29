@@ -21,7 +21,7 @@ on:
     outputs:
       workflow_output1:
         description: "The first job output"
-        value: ${{ jobs.dispatcher1.outputs.output1 }}
+        value: "sa sa sarlanga" #"${{ jobs.dispatcher1.outputs.output1 }}
 
 jobs:
   dispatcher1:
