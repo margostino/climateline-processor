@@ -63,7 +63,7 @@ jobs:
   checker-no-content:
     uses: margostino/climateline-processor/.github/workflows/publisher-no-content-checker-job.yml@master
     needs: publisher
-    if: ${{ inputs.statusCode == '204' }}
+    if: ${{ needs.publisher.outputs.statusCode == '204' }}
     with:
       statusCode: ${{ needs.publisher.outputs.statusCode }}
     secrets: inherit
@@ -71,7 +71,7 @@ jobs:
   checker-success:
     uses: margostino/climateline-processor/.github/workflows/publisher-success-checker-job.yml@master
     needs: publisher
-    if: ${{ inputs.statusCode == '200' }}
+    if: ${{ needs.publisher.outputs.statusCode == '200' }}
     with:
       statusCode: ${{ needs.publisher.outputs.statusCode }}
     secrets: inherit
