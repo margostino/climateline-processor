@@ -1,4 +1,4 @@
-name: Call a reusable workflow and use its outputs
+name: Call Collector Workflow
 
 on:
   workflow_dispatch:
@@ -31,4 +31,4 @@ jobs:
     runs-on: ubuntu-latest
     needs: caller
     steps:
-      - run: echo sarlanfa ${{ needs.caller.outputs.status_code }} fafaaf ${{ needs.caller.outputs.status_code.value }}
+      - run: echo sarlanfa ${{ needs.caller.outputs.status_code }}
