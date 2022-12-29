@@ -30,7 +30,7 @@ func Collect(request *http.Request, writer *http.ResponseWriter) {
 
 	urls = config.GetUrls(category)
 
-	//items, err = internal.FetchNews(category, collectForced)
+	items, err = internal.FetchNews(category, collectForced)
 
 	var botNotifications = 0
 	for _, item := range items {
