@@ -53,7 +53,6 @@ jobs:
           --header 'content-type: application/json' \
           --url "https://climateline-processor.vercel.app/api/collector-job?category=$CATEGORY&collect_forced=$COLLECT_FORCED"`
           echo "status_code=$CODE" >> $GITHUB_OUTPUT
-          exit -1
           if [ $CODE != "200" ]; then 
             exit 1
           fi
@@ -61,6 +60,18 @@ jobs:
         env:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
+
+  dispatcher2:
+    runs-on: ubuntu-latest
+    needs: dispatcher
+    steps:
+      - name: Fetch new articles (dispatcher)
+        run: echo "status_code=$STATUS"
+        if: ${{ needs.dispatcher.outputs.status_code == '200' }}
+        env:
+          COLLECT_FORCED: ${{ inputs.collectForced }}
+          CATEGORY: ${{ inputs.category }}
+          STATUS: ${{ needs.dispatcher.outputs.status_code }}
 
   schedule:
     runs-on: ubuntu-latest
