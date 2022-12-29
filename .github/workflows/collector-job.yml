@@ -45,15 +45,15 @@ jobs:
       - name: Fetch new articles (dispatcher)
         id: dispatcher
         run: |
-          CODE=`curl --write-out '%{http_code}' \
-          --silent \
-          --output /dev/null \
-          --request GET \
-          --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}' \
-          --header 'content-type: application/json' \
-          --url "https://climateline-processor.vercel.app/api/collector-job?category=$CATEGORY&collect_forced=$COLLECT_FORCED"`
-          echo "sarlanga"
-          echo "status_code=$CODE" >> $GITHUB_OUTPUT
+#          CODE=`curl --write-out '%{http_code}' \
+#          --silent \
+#          --output /dev/null \
+#          --request GET \
+#          --header 'Authorization: Bearer ${{ secrets.CLIMATELINE_JOB_SECRET }}' \
+#          --header 'content-type: application/json' \
+#          --url "https://climateline-processor.vercel.app/api/collector-job?category=$CATEGORY&collect_forced=$COLLECT_FORCED"`
+#          echo "sarlanga"
+#          echo "status_code=$CODE" >> $GITHUB_OUTPUT
           echo "testingtesting"
         if: ${{ github.event_name != 'schedule' }}
         env:
