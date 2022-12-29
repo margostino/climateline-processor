@@ -78,7 +78,7 @@ jobs:
     steps:
       - name: Fetch new articles (dispatcher)
         run: echo no-content
-        if: ${{ needs.dispatcher.outputs.status_code == '201' }}
+        if: ${{ needs.dispatcher.outputs.status_code == '204' }}
         env:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
