@@ -36,7 +36,7 @@ jobs:
           if [ $CODE != "200" ]; then 
             exit 1
           fi
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name != 'schedule' }}
         env:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
