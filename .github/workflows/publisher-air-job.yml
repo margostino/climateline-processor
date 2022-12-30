@@ -56,17 +56,20 @@ jobs:
           --url "https://climateline-processor.vercel.app/api/publisher-job?category=$CATEGORY&publish_forced=$PUBLISH_FORCED"`          
           echo "statusCode=$CODE" >> $GITHUB_OUTPUT
           echo "Status Coce: $CODE"
+          if [ $CODE != "200" ]; then
+            exit 1
+          fi
         if: ${{ github.event_name != 'schedule' }}
         env:
           PUBLISH_FORCED: ${{ inputs.publishForced }}
           CATEGORY: ${{ inputs.category }}
 
-  checker-no-content:
-    uses: margostino/climateline-processor/.github/workflows/publisher-no-content-checker-job.yml@master
-    needs: publisher
-    if: ${{ needs.publisher.outputs.statusCode == '204' }}
-
-  checker-success:
-    uses: margostino/climateline-processor/.github/workflows/publisher-success-checker-job.yml@master
-    needs: publisher
-    if: ${{ needs.publisher.outputs.statusCode == '200' }}
+#  checker-no-content:
+#    uses: margostino/climateline-processor/.github/workflows/publisher-no-content-checker-job.yml@master
+#    needs: publisher
+#    if: ${{ needs.publisher.outputs.statusCode == '204' }}
+#
+#  checker-success:
+#    uses: margostino/climateline-processor/.github/workflows/publisher-success-checker-job.yml@master
+#    needs: publisher
+#    if: ${{ needs.publisher.outputs.statusCode == '200' }}

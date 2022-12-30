@@ -1,7 +1,7 @@
 name: Collector Job
 on:
-  schedule:
-    - cron: '0 10 * * *'
+#  schedule:
+#    - cron: '0 10 * * *'
   workflow_dispatch:
     inputs:
       collectForced:
@@ -58,27 +58,27 @@ jobs:
           COLLECT_FORCED: ${{ inputs.collectForced }}
           CATEGORY: ${{ inputs.category }}
 
-  checker-success:
-    runs-on: ubuntu-latest
-    needs: dispatcher
-    steps:
-      - run: echo success
-        if: ${{ needs.dispatcher.outputs.status_code == '200' }}
-        env:
-          COLLECT_FORCED: ${{ inputs.collectForced }}
-          CATEGORY: ${{ inputs.category }}
-          STATUS: ${{ needs.dispatcher.outputs.status_code }}
-
-  checker-no-content:
-    runs-on: ubuntu-latest
-    needs: dispatcher
-    steps:
-      - run: echo no-content
-        if: ${{ needs.dispatcher.outputs.status_code == '204' }}
-        env:
-          COLLECT_FORCED: ${{ inputs.collectForced }}
-          CATEGORY: ${{ inputs.category }}
-          STATUS: ${{ needs.dispatcher.outputs.status_code }}
+#  checker-success:
+#    runs-on: ubuntu-latest
+#    needs: dispatcher
+#    steps:
+#      - run: echo success
+#        if: ${{ needs.dispatcher.outputs.status_code == '200' }}
+#        env:
+#          COLLECT_FORCED: ${{ inputs.collectForced }}
+#          CATEGORY: ${{ inputs.category }}
+#          STATUS: ${{ needs.dispatcher.outputs.status_code }}
+#
+#  checker-no-content:
+#    runs-on: ubuntu-latest
+#    needs: dispatcher
+#    steps:
+#      - run: echo no-content
+#        if: ${{ needs.dispatcher.outputs.status_code == '204' }}
+#        env:
+#          COLLECT_FORCED: ${{ inputs.collectForced }}
+#          CATEGORY: ${{ inputs.category }}
+#          STATUS: ${{ needs.dispatcher.outputs.status_code }}
 
   schedule:
     runs-on: ubuntu-latest
