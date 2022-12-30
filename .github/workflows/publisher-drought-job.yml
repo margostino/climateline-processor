@@ -7,12 +7,12 @@ on:
     inputs:
       publishForced:
         description: 'Flag to force publisher regardless the configuration'
-        type: publish_forced
+        type: boolean
         default: true
         required: true
       category:
         description: 'News Category to filter out'
-        type: category
+        type: string
         required: true
         default: 'drought'
       environment:
