@@ -20,9 +20,9 @@ func Fetch(input string) string {
 	items, err := internal.FetchNews(category, true)
 
 	if !common.IsError(err, "when fetching news") {
-		for _, item := range items {
-			internal.NotifyBot(item)
-		}
+		//for _, item := range items {
+			//internal.NotifyBot(item)
+		//}
 		reply = "✅ Completed successfully"
 	} else {
 		reply = "🔴 Fetcher failed"
