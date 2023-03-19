@@ -3,6 +3,7 @@ package bot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/margostino/climateline-processor/common"
+	"log"
 	"strings"
 )
 
@@ -38,10 +39,11 @@ func Reply(message *tgbotapi.Message) string {
 			Value()
 		sanitizedInput := SanitizeInput(command)
 		commands := strings.Split(sanitizedInput, " ")
-
+		log.Println("EVALUATING command")
 		if len(commands) > 0 {
 			switch commands[0] {
 			case HELP:
+				log.Println("TRYING HELP")
 				reply = Help()
 			case PUSH:
 				reply = Push(sanitizedInput)
@@ -64,6 +66,6 @@ func Reply(message *tgbotapi.Message) string {
 			reply = "🙈 Invalid command!"
 		}
 	}
-
+	log.Printf("reply: %s\n", reply)
 	return reply
 }
