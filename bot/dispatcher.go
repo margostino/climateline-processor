@@ -39,7 +39,7 @@ func Reply(message *tgbotapi.Message) string {
 			Value()
 		sanitizedInput := SanitizeInput(command)
 		commands := strings.Split(sanitizedInput, " ")
-		log.Println("EVALUATING command")
+
 		if len(commands) > 0 {
 			switch commands[0] {
 			case HELP:
@@ -66,6 +66,6 @@ func Reply(message *tgbotapi.Message) string {
 			reply = "🙈 Invalid command!"
 		}
 	}
-	log.Printf("reply: %s\n", reply)
+
 	return reply
 }
